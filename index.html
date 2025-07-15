@@ -18,9 +18,23 @@
             top: 0;
             z-index: 10;
         }
-        /* [FIX] ทำให้สี Hover ของแถวในตารางอ่อนลง */
         tbody tr:hover { background-color: #f9fafb; }
         .dark-mode tbody tr:hover { background-color: #1f2937; }
+        
+        /* [NEW] สไตล์สำหรับปุ่มดาวน์โหลดขนาดเล็ก */
+        .btn-download {
+            padding: 0.25rem 0.75rem; /* py-1 px-3 */
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 600;
+            border-radius: 0.375rem;
+            border: 1px solid transparent;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .btn-download-label { background-color: #dc2626; color: white; }
+        .btn-download-label:hover { background-color: #b91c1c; }
+        .btn-download-doc { background-color: #6b7280; color: white; }
+        .btn-download-doc:hover { background-color: #4b5563; }
     </style>
 </head>
 <body>
@@ -28,10 +42,8 @@
     <header class="bg-white shadow-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-20">
         <div class="flex items-center">
             <span class="text-4xl font-bold text-red-600">DHL</span>
-            <!-- [FIX] แก้ไขสีข้อความ Admin Panel -->
             <span class="ml-2 text-xl font-semibold text-gray-800 dark:text-gray-200">Admin Panel</span>
         </div>
-        <!-- [NEW] เพิ่มปุ่มเปลี่ยนภาษาและ Theme -->
         <nav class="flex items-center space-x-2 sm:space-x-4">
             <div class="relative">
                 <button id="language-toggle-button" class="utility-button px-4 py-2 flex items-center gap-2">
@@ -53,7 +65,6 @@
 
     <main class="container py-8">
         <section class="card">
-            <!-- [FIX] เปลี่ยนชื่อหัวข้อ -->
             <h1 class="text-2xl font-bold mb-6" data-i18n="title">Shipment Search</h1>
             <form id="filter-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                 <div>
@@ -76,7 +87,6 @@
                     <label for="shipperAccount" class="block text-sm font-medium" data-i18n="shipperAccount">Shipper Account</label>
                     <input type="text" id="shipperAccount" class="input-field mt-1">
                 </div>
-                <!-- [NEW] เพิ่ม Filter ประเทศ -->
                 <div>
                     <label for="shipperCountry" class="block text-sm font-medium" data-i18n="shipperCountry">Shipper Country</label>
                     <input type="text" id="shipperCountry" class="input-field mt-1" placeholder="e.g., TH, US, CN">
@@ -117,6 +127,8 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colReceiver">Receiver</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colRef">Reference</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colShipperAcc">Shipper Acc</th>
+                            <!-- [NEW] เพิ่ม Header สำหรับคอลัมน์ดาวน์โหลด -->
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colDownloads">Downloads</th>
                         </tr>
                     </thead>
                     <tbody id="results-tbody" class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -135,14 +147,16 @@
                     'receiverName': 'ชื่อ/บริษัทผู้รับ', 'reference': 'เลขที่อ้างอิง', 'shipperAccount': 'บัญชีผู้ส่ง', 'shipperCountry': 'ประเทศผู้ส่ง',
                     'receiverCountry': 'ประเทศผู้รับ', 'dateFrom': 'จากวันที่', 'dateTo': 'ถึงวันที่', 'search': 'ค้นหา', 'clear': 'ล้างค่า',
                     'loading': 'กำลังโหลดข้อมูล...', 'noResults': 'ไม่พบข้อมูลตามเงื่อนไขที่เลือก', 'colDate': 'วันที่', 'colTracking': 'หมายเลขติดตาม',
-                    'colShipper': 'ผู้ส่ง', 'colReceiver': 'ผู้รับ', 'colRef': 'อ้างอิง', 'colShipperAcc': 'บัญชีผู้ส่ง', 'errorLoading': 'เกิดข้อผิดพลาดในการโหลดข้อมูล'
+                    'colShipper': 'ผู้ส่ง', 'colReceiver': 'ผู้รับ', 'colRef': 'อ้างอิง', 'colShipperAcc': 'บัญชีผู้ส่ง', 'errorLoading': 'เกิดข้อผิดพลาดในการโหลดข้อมูล',
+                    'colDownloads': 'ดาวน์โหลด', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'ดาวน์โหลดไฟล์ล้มเหลว'
                 },
                 'en': {
                     'title': 'Shipment Search', 'logout': 'Logout', 'trackingNumber': 'Tracking Number', 'shipperName': 'Shipper Name/Company',
                     'receiverName': 'Receiver Name/Company', 'reference': 'Reference', 'shipperAccount': 'Shipper Account', 'shipperCountry': 'Shipper Country',
                     'receiverCountry': 'Receiver Country', 'dateFrom': 'Date From', 'dateTo': 'Date To', 'search': 'Search', 'clear': 'Clear',
                     'loading': 'Loading data...', 'noResults': 'No results found for the selected filters.', 'colDate': 'Date', 'colTracking': 'Tracking #',
-                    'colShipper': 'Shipper', 'colReceiver': 'Receiver', 'colRef': 'Reference', 'colShipperAcc': 'Shipper Acc', 'errorLoading': 'Error loading data. Please try again.'
+                    'colShipper': 'Shipper', 'colReceiver': 'Receiver', 'colRef': 'Reference', 'colShipperAcc': 'Shipper Acc', 'errorLoading': 'Error loading data. Please try again.',
+                    'colDownloads': 'Downloads', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'Could not download the file'
                 }
             };
             let currentLanguage = localStorage.getItem('language') || 'th';
@@ -186,6 +200,32 @@
                 });
             }
 
+            // --- [NEW] PDF Download Function ---
+            function downloadPdfFromBase64(base64String, fileName) {
+                try {
+                    const byteCharacters = atob(base64String);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = fileName;
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    URL.revokeObjectURL(link.href);
+                } catch (error) {
+                    console.error('Download failed:', error);
+                    alert(translations[currentLanguage]['downloadFailed']);
+                }
+            }
+
             // --- Main Logic ---
             filterForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -208,7 +248,6 @@
                 fields.forEach(field => {
                     const value = document.getElementById(field).value;
                     if (value) {
-                        // For wildcard searches, we don't need to add '%' here. The backend will handle it.
                         params.append(field, value);
                     }
                 });
@@ -220,8 +259,8 @@
                     renderTable(data);
                 } catch (error) {
                     console.error('Error fetching logs:', error);
-                    resultsTbody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 p-4" data-i18n="errorLoading"></td></tr>`;
-                    updateContentLanguage(); // Translate the error message
+                    resultsTbody.innerHTML = `<tr><td colspan="7" class="text-center text-red-500 p-4" data-i18n="errorLoading"></td></tr>`;
+                    updateContentLanguage();
                     resultsContainer.classList.remove('hidden');
                 } finally {
                     loadingIndicator.classList.add('hidden');
@@ -242,6 +281,7 @@
                         year: '2-digit', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                     });
 
+                    // --- [MODIFIED] สร้าง HTML สำหรับแถว รวมถึงปุ่มดาวน์โหลด ---
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${formattedDate}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-red-600 dark:text-amber-400">${log.respond_trackingnumber || ''}</td>
@@ -249,8 +289,37 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.receiver_name || ''} (${log.receiver_country || ''})</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.request_reference || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.shipper_account_number || ''}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-1">
+                            ${log.respond_label ? `<button class="btn-download btn-download-label" data-pdf-type="label">${translations[currentLanguage]['downloadLabel']}</button>` : ''}
+                            ${log.respond_receipt ? `<button class="btn-download btn-download-doc" data-pdf-type="receipt">${translations[currentLanguage]['downloadReceipt']}</button>` : ''}
+                            ${log.respond_invoice ? `<button class="btn-download btn-download-doc" data-pdf-type="invoice">${translations[currentLanguage]['downloadInvoice']}</button>` : ''}
+                        </td>
                     `;
                     resultsTbody.appendChild(row);
+
+                    // --- [MODIFIED] เพิ่ม Event Listener ให้กับปุ่มที่สร้างขึ้น ---
+                    row.querySelectorAll('button[data-pdf-type]').forEach(button => {
+                        button.addEventListener('click', () => {
+                            const type = button.dataset.pdfType;
+                            const trackingNumber = log.respond_trackingnumber || 'document';
+                            let base64Data, fileName;
+
+                            if (type === 'label') {
+                                base64Data = log.respond_label;
+                                fileName = `${trackingNumber}_Label.pdf`;
+                            } else if (type === 'receipt') {
+                                base64Data = log.respond_receipt;
+                                fileName = `${trackingNumber}_Receipt.pdf`;
+                            } else if (type === 'invoice') {
+                                base64Data = log.respond_invoice;
+                                fileName = `${trackingNumber}_Invoice.pdf`;
+                            }
+
+                            if (base64Data) {
+                                downloadPdfFromBase64(base64Data, fileName);
+                            }
+                        });
+                    });
                 });
                 resultsContainer.classList.remove('hidden');
             }
