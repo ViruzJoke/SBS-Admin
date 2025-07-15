@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* [FIX] จัดกล่อง Login ให้อยู่กึ่งกลางหน้าจอ */
         body {
             display: flex;
             justify-content: center;
@@ -24,6 +25,7 @@
         <div class="card login-card">
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-bold text-red-600">DHL</h1>
+                <!-- [FIX] แก้ไขสีข้อความเป็นสีดำเข้ม -->
                 <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-200 mt-2">Admin Panel</h2>
             </div>
             
@@ -74,7 +76,6 @@
                 const password = document.getElementById('password').value;
 
                 try {
-                    // [สำคัญ] แก้ไข URL นี้ให้เป็น URL ของ Vercel Backend ของคุณ
                     const response = await fetch('https://dbs-back.vercel.app/api/admin-login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -83,7 +84,7 @@
 
                     if (response.ok) {
                         sessionStorage.setItem('dbs_admin_logged_in', 'true');
-                        window.location.href = 'index.html'; // ไปยังหน้า Adminหลัก
+                        window.location.href = 'index.html';
                     } else {
                         const errorData = await response.json();
                         errorMessageDiv.textContent = errorData.message || 'Invalid username or password.';
