@@ -80,13 +80,11 @@
             <form id="filter-form">
                 <fieldset class="filter-group">
                     <legend data-i18n="groupShipmentId">Shipment Detail</legend>
-                    <!-- [FIX] Changed grid to handle 4 items -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div>
                             <label for="trackingNumber" class="block text-sm font-medium" data-i18n="trackingNumber">Tracking Number</label>
                             <input type="text" id="trackingNumber" class="input-field mt-1" placeholder="">
                         </div>
-                        <!-- [NEW] Added Booking Reference filter -->
                         <div>
                             <label for="bookingRef" class="block text-sm font-medium" data-i18n="bookingReference">Booking Reference</label>
                             <input type="text" id="bookingRef" class="input-field mt-1" placeholder="CBJ...">
@@ -172,7 +170,6 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colReceiver">Receiver</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colRef">Reference</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colAccount">Account</th>
-                            <!-- [NEW] Added table header for Booking Ref -->
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colBookingRef">Booking Ref</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colDownloads">Downloads</th>
                         </tr>
@@ -195,7 +192,6 @@
                 return;
             }
 
-            // [FIX] Added translations for booking reference
             const translations = {
                 'th': {
                     'title': 'ค้นหาข้อมูลชิปเมนต์', 'logout': 'ออกจากระบบ', 'trackingNumber': 'หมายเลขติดตามพัสดุ', 'shipperName': 'ชื่อ/บริษัทผู้ส่ง',
@@ -347,7 +343,6 @@
                 paginationControls.classList.add('hidden');
 
                 const params = new URLSearchParams();
-                // [FIX] Added 'bookingRef' to the fields to be searched
                 const fields = ['trackingNumber', 'bookingRef', 'shipperName', 'receiverName', 'reference', 'accountNumber', 'phone', 'shipperCountry', 'receiverCountry', 'dateFrom', 'dateTo', 'timeFrom', 'timeTo'];
                 fields.forEach(field => {
                     const value = document.getElementById(field)?.value;
@@ -362,7 +357,6 @@
                     renderTable();
                 } catch (error) {
                     console.error('Error fetching logs:', error);
-                    // [FIX] Updated colspan to 8
                     resultsTbody.innerHTML = `<tr><td colspan="8" class="text-center text-red-500 p-4" data-i18n="errorLoading"></td></tr>`;
                     updateContentLanguage();
                     resultsContainer.classList.remove('hidden');
@@ -386,7 +380,17 @@
 
                 paginatedLogs.forEach(log => {
                     const row = document.createElement('tr');
-                    const formattedDate = new Date(log.created_at).toLocaleString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', { year: '2-digit', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    
+                    // [MODIFIED] v6: Timezone fix for display
+                    const formattedDate = new Date(log.created_at).toLocaleString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
+                        timeZone: 'Asia/Bangkok',
+                        year: '2-digit',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
                     const shipperAccount = log.shipper_account_number || '';
                     const dutyAccount = log.duty_account_number || '';
                     const accountDisplay = [shipperAccount, dutyAccount].filter(Boolean).join(' / ');
@@ -395,7 +399,6 @@
                         ? `<span class="text-red-500 font-bold">Error</span>`
                         : `<span class="font-medium text-red-600 dark:text-amber-400">${log.respond_trackingnumber || ''}</span>`;
 
-                    // [FIX] Added booking_ref column to the table row
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${formattedDate}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${trackingDisplay}</td>
