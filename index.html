@@ -407,10 +407,11 @@
 
                     if (valA === null || valA === undefined) return 1;
                     if (valB === null || valB === undefined) return -1;
-
+                    
+                    // For date sorting, convert to Date objects to ensure correct comparison
                     if (sortColumn === 'created_at') {
-                        valA = new Date(valA.replace(' ', 'T'));
-                        valB = new Date(valB.replace(' ', 'T'));
+                        valA = new Date(valA);
+                        valB = new Date(valB);
                     }
 
                     let comparison = 0;
@@ -440,30 +441,40 @@
                 paginatedLogs.forEach(log => {
                     const row = document.createElement('tr');
                     
+                    // [FIX] Updated date and time formatting logic
                     let formattedDate = 'N/A';
-                    if (log.created_at && typeof log.created_at === 'string') {
+                    if (log.created_at) {
                         try {
-                            const dateString = log.created_at.split('+')[0].trim();
-                            const dateParts = dateString.split(' ');
-                            const date = dateParts[0];
-                            const time = dateParts.length > 1 ? dateParts[1].substring(0, 5) : '00:00';
+                            // Create a Date object directly from the timestamp string.
+                            // This correctly handles ISO 8601 format (e.g., with 'T' and 'Z') and timezones.
+                            const dateObj = new Date(log.created_at);
 
-                            const tempDate = new Date(date);
-                            if (isNaN(tempDate)) throw new Error('Invalid date part');
+                            if (isNaN(dateObj)) throw new Error('Invalid Date');
 
-                            const formattedDatePart = tempDate.toLocaleDateString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
-                               year: '2-digit',
-                               month: 'short',
-                               day: 'numeric'
-                            });
+                            // Define options for formatting the date part
+                            const dateOptions = {
+                                day: 'numeric',
+                                month: 'short',
+                                year: '2-digit'
+                            };
+                            const formattedDatePart = dateObj.toLocaleDateString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', dateOptions);
+
+                            // Define options for formatting the time part in 24-hour format (HH:mm)
+                            const timeOptions = {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                            };
+                            // Use 'en-GB' locale to ensure HH:mm format, as some locales might add AM/PM
+                            const formattedTimePart = dateObj.toLocaleTimeString('en-GB', timeOptions);
                             
-                            formattedDate = `${formattedDatePart}, ${time}`;
+                            // Combine the formatted parts
+                            formattedDate = `${formattedDatePart}, ${formattedTimePart}`;
                         } catch (e) {
                             console.error(`Could not format date string: ${log.created_at}`, e);
-                            formattedDate = 'Invalid Date';
+                            formattedDate = 'Invalid Date'; // Fallback for safety
                         }
                     }
-
 
                     const shipperAccount = log.shipper_account_number || '';
                     const dutyAccount = log.duty_account_number || '';
