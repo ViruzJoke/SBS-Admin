@@ -400,6 +400,7 @@
                 }
             }
             
+            // [FIX] Updated sort function to handle strings directly
             function sortData() {
                 allLogs.sort((a, b) => {
                     let valA = a[sortColumn];
@@ -407,13 +408,8 @@
 
                     if (valA === null || valA === undefined) return 1;
                     if (valB === null || valB === undefined) return -1;
-                    
-                    // For date sorting, convert to Date objects to ensure correct comparison
-                    if (sortColumn === 'created_at') {
-                        valA = new Date(valA);
-                        valB = new Date(valB);
-                    }
 
+                    // Direct string comparison is safe because the format is YYYY-MM-DD HH:mm:ss
                     let comparison = 0;
                     if (valA > valB) {
                         comparison = 1;
@@ -441,40 +437,41 @@
                 paginatedLogs.forEach(log => {
                     const row = document.createElement('tr');
                     
-                    // [FIX] Updated date and time formatting logic
+                    // [FIX] New date formatting logic using string manipulation
                     let formattedDate = 'N/A';
-                    if (log.created_at) {
+                    if (log.created_at && typeof log.created_at === 'string') {
                         try {
-                            // Create a Date object directly from the timestamp string.
-                            // This correctly handles ISO 8601 format (e.g., with 'T' and 'Z') and timezones.
-                            const dateObj = new Date(log.created_at);
+                            // Example string: "2025-07-23 16:58:39.123456" or "2025-07-23T16:58:39.123Z"
+                            // Replace 'T' with space and split to handle both formats
+                            const parts = log.created_at.replace('T', ' ').split(' ');
+                            const datePart = parts[0]; // "2025-07-23"
+                            const timePart = parts.length > 1 ? parts[1] : ''; // "16:58:39.123..."
 
-                            if (isNaN(dateObj)) throw new Error('Invalid Date');
+                            if (!datePart || !timePart) throw new Error('Invalid format');
 
-                            // Define options for formatting the date part
-                            const dateOptions = {
-                                day: 'numeric',
-                                month: 'short',
-                                year: '2-digit'
-                            };
-                            const formattedDatePart = dateObj.toLocaleDateString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', dateOptions);
+                            const dateComponents = datePart.split('-'); // ["2025", "07", "23"]
+                            const year = dateComponents[0];
+                            const monthIndex = parseInt(dateComponents[1], 10) - 1;
+                            const day = dateComponents[2];
 
-                            // Define options for formatting the time part in 24-hour format (HH:mm)
-                            const timeOptions = {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false
-                            };
-                            // Use 'en-GB' locale to ensure HH:mm format, as some locales might add AM/PM
-                            const formattedTimePart = dateObj.toLocaleTimeString('en-GB', timeOptions);
-                            
-                            // Combine the formatted parts
-                            formattedDate = `${formattedDatePart}, ${formattedTimePart}`;
+                            const monthNamesEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                            const monthNamesTh = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                            const monthName = (currentLanguage === 'th' ? monthNamesTh[monthIndex] : monthNamesEn[monthIndex]) || '';
+
+                            const time = timePart.substring(0, 5); // "16:58"
+
+                            if (currentLanguage === 'th') {
+                                const buddhistYear = parseInt(year, 10) + 543;
+                                formattedDate = `${day} ${monthName} ${buddhistYear.toString().slice(-2)}, ${time}`;
+                            } else {
+                                formattedDate = `${day} ${monthName} ${year.slice(-2)}, ${time}`;
+                            }
                         } catch (e) {
                             console.error(`Could not format date string: ${log.created_at}`, e);
-                            formattedDate = 'Invalid Date'; // Fallback for safety
+                            formattedDate = log.created_at.substring(0, 16); // Fallback
                         }
                     }
+
 
                     const shipperAccount = log.shipper_account_number || '';
                     const dutyAccount = log.duty_account_number || '';
