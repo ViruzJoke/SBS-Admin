@@ -381,8 +381,11 @@
                 paginatedLogs.forEach(log => {
                     const row = document.createElement('tr');
                     
-                    // [MODIFIED] v6: Timezone fix for display
-                    const formattedDate = new Date(log.created_at).toLocaleString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
+                    // [MODIFIED] v7: Corrected timezone handling for display
+                    // We append 'Z' to the string to tell the Date object it's UTC, then format it to Thai time.
+                    // This prevents the browser from converting it to the user's local timezone first.
+                    const dateInUTC = new Date(log.created_at + 'Z');
+                    const formattedDate = dateInUTC.toLocaleString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
                         timeZone: 'Asia/Bangkok',
                         year: '2-digit',
                         month: 'short',
