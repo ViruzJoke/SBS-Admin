@@ -440,9 +440,8 @@
                 paginatedLogs.forEach(log => {
                     const row = document.createElement('tr');
                     
-                    // [MODIFIED] v9: Final robust date parsing and formatting
                     let formattedDate = 'N/A';
-                    if (log.created_at) {
+                    if (log.created_at && typeof log.created_at === 'string') {
                         try {
                             const dateString = log.created_at.split('+')[0].trim();
                             const dateParts = dateString.split(' ');
