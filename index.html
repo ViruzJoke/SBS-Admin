@@ -46,7 +46,6 @@
             font-weight: 600;
             font-size: 0.875rem;
         }
-        /* [MODIFIED] v8: Styles for sorting */
         .sortable-header {
             cursor: pointer;
             position: relative;
@@ -404,7 +403,6 @@
                     if (valA === null || valA === undefined) return 1;
                     if (valB === null || valB === undefined) return -1;
 
-                    // For date sorting, convert to Date objects
                     if (sortColumn === 'created_at') {
                         valA = new Date(valA.replace(' ', 'T'));
                         valB = new Date(valB.replace(' ', 'T'));
@@ -437,25 +435,22 @@
                 paginatedLogs.forEach(log => {
                     const row = document.createElement('tr');
                     
-                    // [MODIFIED] v9: Robust date parsing and formatting
+                    // [MODIFIED] v9: Final robust date parsing and formatting
                     let formattedDate = 'Invalid Date';
                     if (log.created_at) {
-                        // Replace the first space with 'T' to make it a valid ISO-like string for the Date constructor
-                        const isoDateString = log.created_at.replace(' ', 'T');
-                        const dateObj = new Date(isoDateString);
+                        const dateString = log.created_at.split('+')[0]; // Remove timezone offset
+                        const dateParts = dateString.split(' ');
+                        const date = dateParts[0];
+                        const time = dateParts[1].substring(0, 5); // Get HH:MM
+
+                        const tempDate = new Date(date);
+                        const formattedDatePart = tempDate.toLocaleDateString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
+                           year: '2-digit',
+                           month: 'short',
+                           day: 'numeric'
+                        });
                         
-                        // Check if the date is valid before formatting
-                        if (!isNaN(dateObj)) {
-                            formattedDate = dateObj.toLocaleString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
-                                timeZone: 'Asia/Bangkok',
-                                year: '2-digit',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: false
-                            });
-                        }
+                        formattedDate = `${formattedDatePart}, ${time}`;
                     }
 
 
