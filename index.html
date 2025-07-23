@@ -267,7 +267,12 @@
             function updateContentLanguage() {
                 document.querySelectorAll('[data-i18n]').forEach(el => {
                     const key = el.getAttribute('data-i18n');
-                    el.textContent = translations[currentLanguage][key] || el.textContent;
+                    const span = el.querySelector('span[data-i18n]');
+                    if (span) {
+                       span.textContent = translations[currentLanguage][key] || key;
+                    } else {
+                       el.textContent = translations[currentLanguage][key] || key;
+                    }
                 });
                 document.getElementById('current-language-display').textContent = currentLanguage.toUpperCase();
                 if (allLogs.length > 0) {
@@ -436,21 +441,28 @@
                     const row = document.createElement('tr');
                     
                     // [MODIFIED] v9: Final robust date parsing and formatting
-                    let formattedDate = 'Invalid Date';
+                    let formattedDate = 'N/A';
                     if (log.created_at) {
-                        const dateString = log.created_at.split('+')[0]; // Remove timezone offset
-                        const dateParts = dateString.split(' ');
-                        const date = dateParts[0];
-                        const time = dateParts[1].substring(0, 5); // Get HH:MM
+                        try {
+                            const dateString = log.created_at.split('+')[0].trim();
+                            const dateParts = dateString.split(' ');
+                            const date = dateParts[0];
+                            const time = dateParts.length > 1 ? dateParts[1].substring(0, 5) : '00:00';
 
-                        const tempDate = new Date(date);
-                        const formattedDatePart = tempDate.toLocaleDateString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
-                           year: '2-digit',
-                           month: 'short',
-                           day: 'numeric'
-                        });
-                        
-                        formattedDate = `${formattedDatePart}, ${time}`;
+                            const tempDate = new Date(date);
+                            if (isNaN(tempDate)) throw new Error('Invalid date part');
+
+                            const formattedDatePart = tempDate.toLocaleDateString(currentLanguage === 'th' ? 'th-TH' : 'en-GB', {
+                               year: '2-digit',
+                               month: 'short',
+                               day: 'numeric'
+                            });
+                            
+                            formattedDate = `${formattedDatePart}, ${time}`;
+                        } catch (e) {
+                            console.error(`Could not format date string: ${log.created_at}`, e);
+                            formattedDate = 'Invalid Date';
+                        }
                     }
 
 
