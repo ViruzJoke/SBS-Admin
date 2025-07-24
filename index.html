@@ -76,6 +76,26 @@
             border-top: 5px solid;
             opacity: 1;
         }
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .nav-link.active {
+            background-color: #fca5a5;
+            color: #b91c1c;
+        }
+        .dark-mode .nav-link.active {
+            background-color: #4b5563;
+            color: #f9fafb;
+        }
+        .nav-link:not(.active):hover {
+            background-color: #f3f4f6;
+        }
+        .dark-mode .nav-link:not(.active):hover {
+            background-color: #374151;
+        }
     </style>
 </head>
 <body>
@@ -85,7 +105,12 @@
             <span class="text-4xl font-bold text-red-600">DHL</span>
             <span class="ml-2 text-xl font-semibold text-black-900 dark:text-black-200">Admin Panel</span>
         </div>
-        <nav class="flex items-center space-x-2 sm:space-x-4">
+        <!-- [NEW] Navigation Links -->
+        <nav class="hidden md:flex items-center space-x-2">
+            <a href="dashboard.html" class="nav-link" data-i18n="navDashboard">Dashboard</a>
+            <a href="index.html" class="nav-link active" data-i18n="navSearch">Search</a>
+        </nav>
+        <div class="flex items-center space-x-2 sm:space-x-4">
             <div class="relative">
                 <button id="language-toggle-button" class="utility-button px-4 py-2 flex items-center gap-2">
                     <span id="current-language-display">TH</span>
@@ -101,7 +126,7 @@
                 <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
             </button>
             <button id="logout-button" class="btn-primary btn-gray" data-i18n="logout">Logout</button>
-        </nav>
+        </div>
     </header>
 
     <main class="container py-8">
@@ -183,6 +208,8 @@
                 <div class="flex gap-2 mt-6">
                     <button type="submit" id="search-button" class="btn-primary btn-yellow" data-i18n="search">Search</button>
                     <button type="button" id="clear-button" class="btn-primary btn-gray" data-i18n="clear">Clear</button>
+                    <!-- [NEW] Export Button -->
+                    <button type="button" id="export-csv-button" class="btn-primary btn-gray hidden" data-i18n="exportCsv">Export to CSV</button>
                 </div>
             </form>
         </section>
@@ -201,7 +228,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="request_reference"><span data-i18n="colRef">Reference</span><span class="sort-indicator"></span></th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colAccount">Account</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="booking_ref"><span data-i18n="colBookingRef">Booking Ref</span><span class="sort-indicator"></span></th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colDownloads">Downloads</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colDownloads">Downloads / Error</th>
                         </tr>
                     </thead>
                     <tbody id="results-tbody" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
@@ -229,8 +256,9 @@
                     'receiverCountry': 'ประเทศผู้รับ', 'dateFrom': 'จากวันที่', 'dateTo': 'ถึงวันที่', 'timeFrom': 'จากเวลา', 'timeTo': 'ถึงเวลา',
                     'search': 'ค้นหา', 'clear': 'ล้างค่า', 'loading': 'กำลังโหลดข้อมูล...', 'noResults': 'ไม่พบข้อมูลตามเงื่อนไขที่เลือก', 'colDate': 'วันที่', 
                     'colTracking': 'หมายเลขติดตาม', 'colShipper': 'ผู้ส่ง', 'colReceiver': 'ผู้รับ', 'colRef': 'อ้างอิง', 'colAccount': 'บัญชี', 'colBookingRef': 'Booking Ref', 'errorLoading': 'เกิดข้อผิดพลาดในการโหลดข้อมูล',
-                    'colDownloads': 'ดาวน์โหลด', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'ดาวน์โหลดไฟล์ล้มเหลว',
-                    'groupShipmentId': 'Shipment Detail', 'groupCustomerDetail': 'Customer Detail', 'groupDateTime': 'วันและเวลา', 'pageInfo': 'หน้า {currentPage} จาก {totalPages}'
+                    'colDownloads': 'ดาวน์โหลด / ข้อผิดพลาด', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'ดาวน์โหลดไฟล์ล้มเหลว',
+                    'groupShipmentId': 'Shipment Detail', 'groupCustomerDetail': 'Customer Detail', 'groupDateTime': 'วันและเวลา', 'pageInfo': 'หน้า {currentPage} จาก {totalPages}',
+                    'navDashboard': 'แดชบอร์ด', 'navSearch': 'ค้นหา', 'exportCsv': 'ส่งออกเป็น CSV'
                 },
                 'en': {
                     'title': 'Shipment Search', 'logout': 'Logout', 'trackingNumber': 'Tracking Number', 'shipperName': 'Shipper Name/Company',
@@ -238,8 +266,9 @@
                     'receiverCountry': 'Receiver Country', 'dateFrom': 'Date From', 'dateTo': 'Date To', 'timeFrom': 'From Time', 'timeTo': 'To Time',
                     'search': 'Search', 'clear': 'Clear', 'loading': 'Loading data...', 'noResults': 'No results found for the selected filters.', 'colDate': 'Date', 
                     'colTracking': 'Tracking #', 'colShipper': 'Shipper', 'colReceiver': 'Receiver', 'colRef': 'Reference', 'colAccount': 'Account', 'colBookingRef': 'Booking Ref', 'errorLoading': 'Error loading data. Please try again.',
-                    'colDownloads': 'Downloads', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'Could not download the file',
-                    'groupShipmentId': 'Shipment Detail', 'groupCustomerDetail': 'Customer Detail', 'groupDateTime': 'Date & Time', 'pageInfo': 'Page {currentPage} of {totalPages}'
+                    'colDownloads': 'Downloads / Error', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'Could not download the file',
+                    'groupShipmentId': 'Shipment Detail', 'groupCustomerDetail': 'Customer Detail', 'groupDateTime': 'Date & Time', 'pageInfo': 'Page {currentPage} of {totalPages}',
+                    'navDashboard': 'Dashboard', 'navSearch': 'Search', 'exportCsv': 'Export to CSV'
                 }
             };
             let currentLanguage = localStorage.getItem('language') || 'th';
@@ -249,6 +278,8 @@
             const rowsPerPage = 10;
             let sortColumn = 'created_at';
             let sortDirection = 'desc';
+
+            const API_BASE_URL = 'https://dbs-back.vercel.app/api';
 
             const filterForm = document.getElementById('filter-form');
             const resultsTbody = document.getElementById('results-tbody');
@@ -263,6 +294,7 @@
             const nextPageBtn = document.getElementById('next-page');
             const pageInfoSpan = document.getElementById('page-info');
             const logoutButton = document.getElementById('logout-button');
+            const exportCsvButton = document.getElementById('export-csv-button');
 
             function updateContentLanguage() {
                 document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -333,6 +365,61 @@
                     document.getElementById('timeTo').value = '';
                 }
             }
+            
+            // [NEW] Export to CSV function
+            function exportToCSV() {
+                if (allLogs.length === 0) {
+                    alert('No data to export.');
+                    return;
+                }
+                const headers = [
+                    "Created At", "Log Type", "Tracking Number", "Shipper Name", "Shipper Company", "Shipper Country",
+                    "Receiver Name", "Receiver Company", "Receiver Country", "Request Reference", "Shipper Account", "Duty Account",
+                    "Booking Ref", "Error Message"
+                ];
+
+                const escapeCsvCell = (cell) => {
+                    const str = (cell === null || cell === undefined) ? '' : String(cell);
+                    if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+                        return `"${str.replace(/"/g, '""')}"`;
+                    }
+                    return str;
+                };
+                
+                const csvRows = [headers.join(',')];
+
+                allLogs.forEach(log => {
+                    const row = [
+                        log.created_at,
+                        log.log_type,
+                        log.respond_trackingnumber,
+                        log.shipper_name,
+                        log.shipper_company,
+                        log.shipper_country,
+                        log.receiver_name,
+                        log.receiver_company,
+                        log.receiver_country,
+                        log.request_reference,
+                        log.shipper_account_number,
+                        log.duty_account_number,
+                        log.booking_ref,
+                        log.error_message
+                    ].map(escapeCsvCell);
+                    csvRows.push(row.join(','));
+                });
+
+                const csvString = csvRows.join('\n');
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                const today = new Date().toISOString().slice(0, 10);
+                link.setAttribute('download', `dbs_export_${today}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
 
             dateFromInput.addEventListener('change', toggleTimeFilter);
             dateToInput.addEventListener('change', toggleTimeFilter);
@@ -348,12 +435,15 @@
                 resultsContainer.classList.add('hidden');
                 noResultsDiv.classList.add('hidden');
                 paginationControls.classList.add('hidden');
+                exportCsvButton.classList.add('hidden');
             });
             
             logoutButton.addEventListener('click', () => {
                 sessionStorage.removeItem('dbs_admin_logged_in');
                 window.location.href = 'login.html';
             });
+
+            exportCsvButton.addEventListener('click', exportToCSV);
 
             prevPageBtn.addEventListener('click', () => {
                 if (currentPage > 1) {
@@ -375,6 +465,7 @@
                 resultsContainer.classList.add('hidden');
                 noResultsDiv.classList.add('hidden');
                 paginationControls.classList.add('hidden');
+                exportCsvButton.classList.add('hidden');
 
                 const params = new URLSearchParams();
                 const fields = ['trackingNumber', 'bookingRef', 'shipperName', 'receiverName', 'reference', 'accountNumber', 'phone', 'shipperCountry', 'receiverCountry', 'dateFrom', 'dateTo', 'timeFrom', 'timeTo'];
@@ -384,7 +475,7 @@
                 });
 
                 try {
-                    const response = await fetch(`https://dbs-back.vercel.app/api/query-logs?${params.toString()}`);
+                    const response = await fetch(`${API_BASE_URL}/query-logs?${params.toString()}`);
                     if (!response.ok) throw new Error(`Server responded with status: ${response.status}`);
                     allLogs = await response.json();
                     sortData();
@@ -400,7 +491,6 @@
                 }
             }
             
-            // [FIX] Updated sort function to handle strings directly
             function sortData() {
                 allLogs.sort((a, b) => {
                     let valA = a[sortColumn];
@@ -408,8 +498,7 @@
 
                     if (valA === null || valA === undefined) return 1;
                     if (valB === null || valB === undefined) return -1;
-
-                    // Direct string comparison is safe because the format is YYYY-MM-DD HH:mm:ss
+                    
                     let comparison = 0;
                     if (valA > valB) {
                         comparison = 1;
@@ -427,6 +516,7 @@
                     noResultsDiv.classList.remove('hidden');
                     resultsContainer.classList.add('hidden');
                     paginationControls.classList.add('hidden');
+                    exportCsvButton.classList.add('hidden');
                     return;
                 }
                 
@@ -437,41 +527,20 @@
                 paginatedLogs.forEach(log => {
                     const row = document.createElement('tr');
                     
-                    // [FIX] New date formatting logic using string manipulation
                     let formattedDate = 'N/A';
-                    if (log.created_at && typeof log.created_at === 'string') {
+                    if (log.created_at) {
                         try {
-                            // Example string: "2025-07-23 16:58:39.123456" or "2025-07-23T16:58:39.123Z"
-                            // Replace 'T' with space and split to handle both formats
-                            const parts = log.created_at.replace('T', ' ').split(' ');
-                            const datePart = parts[0]; // "2025-07-23"
-                            const timePart = parts.length > 1 ? parts[1] : ''; // "16:58:39.123..."
-
-                            if (!datePart || !timePart) throw new Error('Invalid format');
-
-                            const dateComponents = datePart.split('-'); // ["2025", "07", "23"]
-                            const year = dateComponents[0];
-                            const monthIndex = parseInt(dateComponents[1], 10) - 1;
-                            const day = dateComponents[2];
-
-                            const monthNamesEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                            const monthNamesTh = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-                            const monthName = (currentLanguage === 'th' ? monthNamesTh[monthIndex] : monthNamesEn[monthIndex]) || '';
-
-                            const time = timePart.substring(0, 5); // "16:58"
-
-                            if (currentLanguage === 'th') {
-                                const buddhistYear = parseInt(year, 10) + 543;
-                                formattedDate = `${day} ${monthName} ${buddhistYear.toString().slice(-2)}, ${time}`;
-                            } else {
-                                formattedDate = `${day} ${monthName} ${year.slice(-2)}, ${time}`;
-                            }
+                           const dateObj = new Date(log.created_at);
+                           const time = dateObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                           const year = currentLanguage === 'th' ? dateObj.getFullYear() + 543 : dateObj.getFullYear();
+                           const monthNamesEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                           const monthNamesTh = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                           const monthName = currentLanguage === 'th' ? monthNamesTh[dateObj.getMonth()] : monthNamesEn[dateObj.getMonth()];
+                           formattedDate = `${dateObj.getDate()} ${monthName} ${String(year).slice(-2)}, ${time}`;
                         } catch (e) {
-                            console.error(`Could not format date string: ${log.created_at}`, e);
                             formattedDate = log.created_at.substring(0, 16); // Fallback
                         }
                     }
-
 
                     const shipperAccount = log.shipper_account_number || '';
                     const dutyAccount = log.duty_account_number || '';
@@ -480,6 +549,18 @@
                     const trackingDisplay = log.log_type === 'Error'
                         ? `<span class="text-red-500 font-bold">Error</span>`
                         : `<span class="font-medium text-red-600 dark:text-amber-400">${log.respond_trackingnumber || ''}</span>`;
+                    
+                    // [MODIFIED] Logic for downloads/error column
+                    let downloadsCellContent;
+                    if (log.log_type === 'Error') {
+                        downloadsCellContent = `<span class="text-red-500 text-xs">${log.error_message || 'Unknown error'}</span>`;
+                    } else {
+                        const labelButton = log.respond_label ? `<button class="btn-download btn-download-label" data-pdf-type="label">${translations[currentLanguage]['downloadLabel']}</button>` : '';
+                        const receiptButton = log.respond_receipt ? `<button class="btn-download btn-download-doc" data-pdf-type="receipt">${translations[currentLanguage]['downloadReceipt']}</button>` : '';
+                        const invoiceButton = log.respond_invoice ? `<button class="btn-download btn-download-doc" data-pdf-type="invoice">${translations[currentLanguage]['downloadInvoice']}</button>` : '';
+                        downloadsCellContent = `${labelButton} ${receiptButton} ${invoiceButton}`;
+                    }
+
 
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${formattedDate}</td>
@@ -495,11 +576,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.request_reference || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${accountDisplay}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.booking_ref || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-1">
-                            ${log.respond_label ? `<button class="btn-download btn-download-label" data-pdf-type="label">${translations[currentLanguage]['downloadLabel']}</button>` : ''}
-                            ${log.respond_receipt ? `<button class="btn-download btn-download-doc" data-pdf-type="receipt">${translations[currentLanguage]['downloadReceipt']}</button>` : ''}
-                            ${log.respond_invoice ? `<button class="btn-download btn-download-doc" data-pdf-type="invoice">${translations[currentLanguage]['downloadInvoice']}</button>` : ''}
-                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-1">${downloadsCellContent}</td>
                     `;
                     resultsTbody.appendChild(row);
 
@@ -520,6 +597,7 @@
                 updateSortIndicators();
                 resultsContainer.classList.remove('hidden');
                 paginationControls.classList.remove('hidden');
+                exportCsvButton.classList.remove('hidden');
             }
 
             function updatePagination() {
