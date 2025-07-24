@@ -96,42 +96,59 @@
     </div>
 
     <main class="container py-8">
-        <h1 class="text-3xl font-bold mb-6" data-i18n="dashboardTitle">Dashboard</h1>
-
-        <!-- Stat Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="stat-card">
-                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statTotalToday">Total Shipments (Today)</h3>
-                <p id="stat-total-today" class="text-3xl font-bold mt-2">...</p>
-            </div>
-            <div class="stat-card">
-                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statSuccess">Successful</h3>
-                <p id="stat-success" class="text-3xl font-bold mt-2 text-green-500">...</p>
-            </div>
-            <div class="stat-card">
-                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statError">Errors</h3>
-                <p id="stat-error" class="text-3xl font-bold mt-2 text-red-500">...</p>
-            </div>
-            <div class="stat-card">
-                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statWithInvoice">With Invoice</h3>
-                <p id="stat-with-invoice" class="text-3xl font-bold mt-2">...</p>
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+            <h1 class="text-3xl font-bold" data-i18n="dashboardTitle">Dashboard</h1>
+             <!-- [NEW] Date Range Filter -->
+            <div class="flex flex-wrap items-center gap-2">
+                <div>
+                    <label for="dateFrom" class="text-sm font-medium" data-i18n="dateFrom">From</label>
+                    <input type="date" id="dateFrom" class="input-field text-sm p-2">
+                </div>
+                <div>
+                    <label for="dateTo" class="text-sm font-medium" data-i18n="dateTo">To</label>
+                    <input type="date" id="dateTo" class="input-field text-sm p-2">
+                </div>
+                <button id="fetch-data-button" class="btn-primary btn-yellow self-end" data-i18n="getData">Get Data</button>
             </div>
         </div>
 
-        <!-- Charts -->
-        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <!-- [FIXED] Changed structure for robust height control -->
-            <div class="lg:col-span-3 stat-card h-96 flex flex-col">
-                <h3 class="text-lg font-semibold mb-4 flex-shrink-0" data-i18n="chartDailyVolume">Daily Volume (Last 7 Days)</h3>
-                <div class="relative flex-grow">
-                    <canvas id="dailyVolumeChart"></canvas>
+        <div id="loading-indicator" class="text-center py-8 hidden"><p data-i18n="loading">Loading data...</p></div>
+        <div id="error-message" class="text-center py-8 hidden text-red-500"></div>
+
+        <div id="dashboard-content" class="hidden">
+            <!-- Stat Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statTotal">Total Shipments</h3>
+                    <p id="stat-total" class="text-3xl font-bold mt-2">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statSuccess">Successful</h3>
+                    <p id="stat-success" class="text-3xl font-bold mt-2 text-green-500">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statError">Errors</h3>
+                    <p id="stat-error" class="text-3xl font-bold mt-2 text-red-500">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400" data-i18n="statWithInvoice">With Invoice</h3>
+                    <p id="stat-with-invoice" class="text-3xl font-bold mt-2">0</p>
                 </div>
             </div>
-            <!-- [FIXED] Changed structure for robust height control -->
-            <div class="lg:col-span-2 stat-card h-96 flex flex-col">
-                 <h3 class="text-lg font-semibold mb-4 flex-shrink-0" data-i18n="chartTopCountries">Top 5 Receiver Countries</h3>
-                <div class="relative flex-grow">
-                    <canvas id="topCountriesChart"></canvas>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                <div class="lg:col-span-3 stat-card h-96 flex flex-col">
+                    <h3 class="text-lg font-semibold mb-4 flex-shrink-0" data-i18n="chartDailyVolume">Daily Volume</h3>
+                    <div class="relative flex-grow">
+                        <canvas id="dailyVolumeChart"></canvas>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 stat-card h-96 flex flex-col">
+                     <h3 class="text-lg font-semibold mb-4 flex-shrink-0" data-i18n="chartTopCountries">Top 5 Receiver Countries</h3>
+                    <div class="relative flex-grow">
+                        <canvas id="topCountriesChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -144,21 +161,32 @@
                 return;
             }
             
+            const API_BASE_URL = 'https://dbs-back.vercel.app/api';
+
             const translations = {
                 'th': {
                     'navDashboard': 'แดชบอร์ด', 'navSearch': 'ค้นหา', 'logout': 'ออกจากระบบ',
-                    'dashboardTitle': 'แดชบอร์ดภาพรวม',
-                    'statTotalToday': 'ยอดชิปเมนต์วันนี้', 'statSuccess': 'สำเร็จ', 'statError': 'ผิดพลาด', 'statWithInvoice': 'มีใบแจ้งหนี้',
-                    'chartDailyVolume': 'ปริมาณงานรายวัน (7 วันล่าสุด)', 'chartTopCountries': '5 ประเทศผู้รับสูงสุด'
+                    'dashboardTitle': 'แดชบอร์ดภาพรวม', 'dateFrom': 'จาก', 'dateTo': 'ถึง', 'getData': 'แสดงข้อมูล',
+                    'statTotal': 'ยอดชิปเมนต์ทั้งหมด', 'statSuccess': 'สำเร็จ', 'statError': 'ผิดพลาด', 'statWithInvoice': 'มีใบแจ้งหนี้',
+                    'chartDailyVolume': 'ปริมาณงานรายวัน', 'chartTopCountries': '5 ประเทศผู้รับสูงสุด',
+                    'loading': 'กำลังโหลดข้อมูล...', 'errorFetch': 'ไม่สามารถดึงข้อมูลได้ กรุณาลองใหม่'
                 },
                 'en': {
                     'navDashboard': 'Dashboard', 'navSearch': 'Search', 'logout': 'Logout',
-                    'dashboardTitle': 'Overview Dashboard',
-                    'statTotalToday': 'Total Shipments (Today)', 'statSuccess': 'Successful', 'statError': 'Errors', 'statWithInvoice': 'With Invoice',
-                    'chartDailyVolume': 'Daily Volume (Last 7 Days)', 'chartTopCountries': 'Top 5 Receiver Countries'
+                    'dashboardTitle': 'Overview Dashboard', 'dateFrom': 'From', 'dateTo': 'To', 'getData': 'Get Data',
+                    'statTotal': 'Total Shipments', 'statSuccess': 'Successful', 'statError': 'Errors', 'statWithInvoice': 'With Invoice',
+                    'chartDailyVolume': 'Daily Volume', 'chartTopCountries': 'Top 5 Receiver Countries',
+                    'loading': 'Loading data...', 'errorFetch': 'Could not fetch data. Please try again.'
                 }
             };
             let currentLanguage = localStorage.getItem('language') || 'th';
+
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const errorMessageDiv = document.getElementById('error-message');
+            const dashboardContent = document.getElementById('dashboard-content');
+            const dateFromInput = document.getElementById('dateFrom');
+            const dateToInput = document.getElementById('dateTo');
+            const fetchDataButton = document.getElementById('fetch-data-button');
 
             function updateContentLanguage() {
                 document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -190,14 +218,14 @@
                     localStorage.setItem('theme', 'dark');
                     lightIcons.forEach(icon => icon.classList.add('hidden'));
                     darkIcons.forEach(icon => icon.classList.remove('hidden'));
-                    fetchDashboardData(); // Redraw charts with new theme
+                    fetchDashboardData();
                 };
                 const disableDarkMode = () => {
                     document.body.classList.remove('dark-mode');
                     localStorage.setItem('theme', 'light');
                     lightIcons.forEach(icon => icon.classList.remove('hidden'));
                     darkIcons.forEach(icon => icon.classList.add('hidden'));
-                    fetchDashboardData(); // Redraw charts with new theme
+                    fetchDashboardData();
                 };
 
                 themeToggles.forEach(toggle => {
@@ -261,45 +289,64 @@
                     });
                 });
             }
+            
+            function setDefaultDates() {
+                const today = new Date();
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(today.getDate() - 6); // 7 days including today
+
+                // Format to YYYY-MM-DD
+                const toISODateString = (date) => {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                }
+
+                dateToInput.value = toISODateString(today);
+                dateFromInput.value = toISODateString(sevenDaysAgo);
+            }
 
             async function fetchDashboardData() {
-                // For demonstration, we use mock data
-                const mockData = {
-                    summary: {
-                        totalToday: 152,
-                        successToday: 138,
-                        errorToday: 14,
-                        withInvoice: 95,
-                    },
-                    dailyVolume: [
-                        { date: 'Jul 18', count: 120 },
-                        { date: 'Jul 19', count: 135 },
-                        { date: 'Jul 20', count: 140 },
-                        { date: 'Jul 21', count: 162 },
-                        { date: 'Jul 22', count: 155 },
-                        { date: 'Jul 23', count: 148 },
-                        { date: 'Jul 24', count: 152 },
-                    ],
-                    topCountries: [
-                        { country: 'TH', count: 450 },
-                        { country: 'CN', count: 320 },
-                        { country: 'US', count: 210 },
-                        { country: 'SG', count: 180 },
-                        { country: 'JP', count: 150 },
-                    ]
-                };
-                
-                renderDashboard(mockData);
+                loadingIndicator.classList.remove('hidden');
+                dashboardContent.classList.add('hidden');
+                errorMessageDiv.classList.add('hidden');
+
+                const dateFrom = dateFromInput.value;
+                const dateTo = dateToInput.value;
+
+                if (!dateFrom || !dateTo) {
+                    errorMessageDiv.textContent = 'Please select a valid date range.';
+                    errorMessageDiv.classList.remove('hidden');
+                    loadingIndicator.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/dashboard-stats?dateFrom=${dateFrom}&dateTo=${dateTo}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    renderDashboard(data);
+                    dashboardContent.classList.remove('hidden');
+                } catch (error) {
+                    console.error('Error fetching dashboard data:', error);
+                    errorMessageDiv.textContent = translations[currentLanguage]['errorFetch'];
+                    errorMessageDiv.classList.remove('hidden');
+                } finally {
+                    loadingIndicator.classList.add('hidden');
+                }
             }
 
             let dailyVolumeChartInstance;
             let topCountriesChartInstance;
 
             function renderDashboard(data) {
-                document.getElementById('stat-total-today').textContent = data.summary.totalToday.toLocaleString();
-                document.getElementById('stat-success').textContent = data.summary.successToday.toLocaleString();
-                document.getElementById('stat-error').textContent = data.summary.errorToday.toLocaleString();
-                document.getElementById('stat-with-invoice').textContent = data.summary.withInvoice.toLocaleString();
+                document.getElementById('stat-total').textContent = (data.summary?.totalShipments || 0).toLocaleString();
+                document.getElementById('stat-success').textContent = (data.summary?.successful || 0).toLocaleString();
+                document.getElementById('stat-error').textContent = (data.summary?.errors || 0).toLocaleString();
+                document.getElementById('stat-with-invoice').textContent = (data.summary?.withInvoice || 0).toLocaleString();
 
                 const isDarkMode = document.body.classList.contains('dark-mode');
                 const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -312,69 +359,42 @@
                 dailyVolumeChartInstance = new Chart(dailyVolumeCtx, {
                     type: 'bar',
                     data: {
-                        labels: data.dailyVolume.map(d => d.date),
+                        labels: data.dailyVolume?.map(d => d.date) || [],
                         datasets: [{
                             label: 'Shipments',
-                            data: data.dailyVolume.map(d => d.count),
+                            data: data.dailyVolume?.map(d => d.count) || [],
                             backgroundColor: 'rgba(220, 38, 38, 0.6)',
                             borderColor: 'rgba(220, 38, 38, 1)',
                             borderWidth: 1
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { 
-                                beginAtZero: true,
-                                ticks: { color: textColor },
-                                grid: { color: gridColor }
-                            },
-                            x: {
-                                ticks: { color: textColor },
-                                grid: { color: 'transparent' }
-                            }
-                        }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } }, x: { ticks: { color: textColor }, grid: { color: 'transparent' } } } }
                 });
 
                 const topCountriesCtx = document.getElementById('topCountriesChart').getContext('2d');
                 topCountriesChartInstance = new Chart(topCountriesCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: data.topCountries.map(c => c.country),
+                        labels: data.topCountries?.map(c => c.country) || [],
                         datasets: [{
                             label: 'Shipments',
-                            data: data.topCountries.map(c => c.count),
-                            backgroundColor: [
-                                'rgba(251, 191, 36, 0.7)',
-                                'rgba(220, 38, 38, 0.7)',
-                                'rgba(107, 114, 128, 0.7)',
-                                'rgba(249, 115, 22, 0.7)',
-                                'rgba(59, 130, 246, 0.7)'
-                            ],
+                            data: data.topCountries?.map(c => c.count) || [],
+                            backgroundColor: [ 'rgba(251, 191, 36, 0.7)', 'rgba(220, 38, 38, 0.7)', 'rgba(107, 114, 128, 0.7)', 'rgba(249, 115, 22, 0.7)', 'rgba(59, 130, 246, 0.7)' ],
                             borderColor: isDarkMode ? '#1f2937' : '#fff',
                             borderWidth: 2,
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'right',
-                                labels: { color: textColor }
-                            }
-                        }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: textColor } } } }
                 });
             }
+            
+            fetchDataButton.addEventListener('click', fetchDashboardData);
             
             setupTheme();
             setupLanguageSwitch();
             setupMobileMenu();
             setupLogoutButtons();
+            setDefaultDates();
             updateContentLanguage();
             fetchDashboardData();
         });

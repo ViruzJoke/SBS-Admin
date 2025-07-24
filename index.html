@@ -231,6 +231,8 @@
                 return;
             }
 
+            const API_BASE_URL = 'https://dbs-back.vercel.app/api';
+
             const translations = {
                 'th': {
                     'title': 'ค้นหาข้อมูลชิปเมนต์', 'logout': 'ออกจากระบบ', 'trackingNumber': 'หมายเลขติดตามพัสดุ', 'shipperName': 'ชื่อ/บริษัทผู้ส่ง',
@@ -260,8 +262,6 @@
             const rowsPerPage = 10;
             let sortColumn = 'created_at';
             let sortDirection = 'desc';
-
-            const API_BASE_URL = 'https://dbs-back.vercel.app/api';
 
             const filterForm = document.getElementById('filter-form');
             const resultsTbody = document.getElementById('results-tbody');
@@ -451,7 +451,7 @@
                         log.shipper_account_number,
                         log.duty_account_number,
                         log.booking_ref,
-                        log.respond_warnings // [FIXED] Changed from error_message
+                        log.respond_warnings
                     ].map(escapeCsvCell);
                     csvRows.push(row.join(','));
                 });
@@ -595,22 +595,16 @@
                     
                     let downloadsCellContent;
                     if (log.log_type === 'Error') {
-                        // [FIXED] Use respond_warnings and handle JSON string
-                        let warningText = 'Unknown error';
-                        if (log.respond_warnings) {
-                            try {
-                                // The warning is often a JSON string inside a string, e.g., "'{\"warnings\":[...]}'"
-                                // We need to parse it carefully.
-                                const cleanedString = log.respond_warnings.replace(/^'|'$/g, ''); // Remove outer quotes
-                                const parsedJson = JSON.parse(cleanedString);
-                                if (parsedJson.warnings && parsedJson.warnings.length > 0) {
-                                    warningText = parsedJson.warnings.map(w => w.message).join('; ');
-                                } else {
-                                    warningText = log.respond_warnings; // Fallback to raw text
-                                }
-                            } catch (e) {
-                                warningText = log.respond_warnings; // If parsing fails, show the raw text
+                        // [FIXED] Robustly display respond_warnings
+                        let warningText = log.respond_warnings || 'No warning message provided.';
+                        try {
+                            // Attempt to parse if it's a JSON string
+                            const parsed = JSON.parse(warningText);
+                            if (parsed && parsed.warnings && Array.isArray(parsed.warnings)) {
+                                warningText = parsed.warnings.map(w => w.message).join('; ');
                             }
+                        } catch (e) {
+                            // It's not a valid JSON string, so we display it as is.
                         }
                         downloadsCellContent = `<span class="text-red-500 text-xs">${warningText}</span>`;
                     } else {
