@@ -7,69 +7,93 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
 	<link rel="icon" href="DBS_Icon2.jpg" type="image/jpg">
-    <!-- [NEW] Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .nav-link {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-        .nav-link.active {
-            background-color: #fca5a5;
-            color: #b91c1c;
-        }
-        .dark-mode .nav-link.active {
-            background-color: #4b5563;
-            color: #f9fafb;
-        }
-        .nav-link:not(.active):hover {
-            background-color: #f3f4f6;
-        }
-        .dark-mode .nav-link:not(.active):hover {
-            background-color: #374151;
-        }
-        .stat-card {
-            background-color: #fff;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-        }
-        .dark-mode .stat-card {
-            background-color: #1f2937;
-        }
+        .nav-link { padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; transition: background-color 0.2s; }
+        .nav-link.active { background-color: #fca5a5; color: #b91c1c; }
+        .dark-mode .nav-link.active { background-color: #4b5563; color: #f9fafb; }
+        .nav-link:not(.active):hover { background-color: #f3f4f6; }
+        .dark-mode .nav-link:not(.active):hover { background-color: #374151; }
+        .stat-card { background-color: #fff; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1); }
+        .dark-mode .stat-card { background-color: #1f2937; }
     </style>
 </head>
 <body>
 
-    <header class="bg-white shadow-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-20">
+    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-30">
         <div class="flex items-center">
-            <span class="text-4xl font-bold text-red-600">DHL</span>
-            <span class="ml-2 text-xl font-semibold text-black-900 dark:text-black-200">Admin Panel</span>
+             <a href="dashboard.html" class="flex items-center">
+                <span class="text-4xl font-bold text-red-600">DHL</span>
+                <span class="ml-2 text-xl font-semibold text-gray-800 dark:text-gray-200">Admin Panel</span>
+            </a>
         </div>
-        <nav class="hidden md:flex items-center space-x-2">
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden lg:flex items-center space-x-2">
             <a href="dashboard.html" class="nav-link active" data-i18n="navDashboard">Dashboard</a>
             <a href="index.html" class="nav-link" data-i18n="navSearch">Search</a>
         </nav>
-        <div class="flex items-center space-x-2 sm:space-x-4">
+        <div class="hidden lg:flex items-center space-x-2 sm:space-x-4">
             <div class="relative">
-                <button id="language-toggle-button" class="utility-button px-4 py-2 flex items-center gap-2">
-                    <span id="current-language-display">TH</span>
+                <button id="language-toggle-button-desktop" class="utility-button px-4 py-2 flex items-center gap-2">
+                    <span id="current-language-display-desktop">TH</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div id="language-dropdown" class="language-dropdown absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg hidden z-20 dark:bg-gray-700">
+                <div id="language-dropdown-desktop" class="language-dropdown absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg hidden z-20 dark:bg-gray-700">
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="th">ภาษาไทย</a>
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="en">English</a>
                 </div>
             </div>
-            <button id="theme-toggle" class="utility-button">
-                <svg id="theme-icon-light" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            <button id="theme-toggle-desktop" class="utility-button">
+                <svg id="theme-icon-light-desktop" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <svg id="theme-icon-dark-desktop" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
             </button>
-            <button id="logout-button" class="btn-primary btn-gray" data-i18n="logout">Logout</button>
+            <button id="logout-button-desktop" class="btn-primary btn-gray" data-i18n="logout">Logout</button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="lg:hidden">
+            <button id="mobile-menu-button" class="utility-button">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
         </div>
     </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 z-40">
+        <div class="fixed top-0 right-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg p-6 z-50">
+            <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-600 dark:text-gray-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <nav class="mt-10 flex flex-col space-y-4">
+                 <a href="dashboard.html" class="nav-link active" data-i18n="navDashboard">Dashboard</a>
+                 <a href="index.html" class="nav-link" data-i18n="navSearch">Search</a>
+                 <hr class="dark:border-gray-600">
+                 <div class="flex justify-between items-center">
+                    <span class="font-medium dark:text-gray-300">Language</span>
+                    <div class="relative">
+                         <button id="language-toggle-button-mobile" class="utility-button px-4 py-2 flex items-center gap-2">
+                            <span id="current-language-display-mobile">TH</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div id="language-dropdown-mobile" class="language-dropdown absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg hidden z-20 dark:bg-gray-700">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="th">ภาษาไทย</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="en">English</a>
+                        </div>
+                    </div>
+                 </div>
+                 <div class="flex justify-between items-center">
+                    <span class="font-medium dark:text-gray-300">Theme</span>
+                    <button id="theme-toggle-mobile" class="utility-button">
+                        <svg id="theme-icon-light-mobile" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg id="theme-icon-dark-mobile" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    </button>
+                 </div>
+                 <hr class="dark:border-gray-600">
+                 <button id="logout-button-mobile" class="w-full btn-primary btn-gray" data-i18n="logout">Logout</button>
+            </nav>
+        </div>
+    </div>
 
     <main class="container py-8">
         <h1 class="text-3xl font-bold mb-6" data-i18n="dashboardTitle">Dashboard</h1>
@@ -98,11 +122,17 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
             <div class="lg:col-span-3 stat-card">
                 <h3 class="text-lg font-semibold mb-4" data-i18n="chartDailyVolume">Daily Volume (Last 7 Days)</h3>
-                <canvas id="dailyVolumeChart"></canvas>
+                <!-- [FIXED] Added container with relative position and height -->
+                <div class="relative h-80">
+                    <canvas id="dailyVolumeChart"></canvas>
+                </div>
             </div>
             <div class="lg:col-span-2 stat-card">
                  <h3 class="text-lg font-semibold mb-4" data-i18n="chartTopCountries">Top 5 Receiver Countries</h3>
-                <canvas id="topCountriesChart"></canvas>
+                 <!-- [FIXED] Added container with relative position and height -->
+                <div class="relative h-80">
+                    <canvas id="topCountriesChart"></canvas>
+                </div>
             </div>
         </div>
     </main>
@@ -133,46 +163,106 @@
             function updateContentLanguage() {
                 document.querySelectorAll('[data-i18n]').forEach(el => {
                     const key = el.getAttribute('data-i18n');
-                    el.textContent = translations[currentLanguage][key] || key;
+                    if(el.tagName !== 'INPUT') {
+                       el.textContent = translations[currentLanguage][key] || key;
+                    }
                 });
-                document.getElementById('current-language-display').textContent = currentLanguage.toUpperCase();
+                document.getElementById('current-language-display-desktop').textContent = currentLanguage.toUpperCase();
+                document.getElementById('current-language-display-mobile').textContent = currentLanguage.toUpperCase();
             }
 
             function setupTheme() {
-                const themeToggle = document.getElementById('theme-toggle');
-                const lightIcon = document.getElementById('theme-icon-light');
-                const darkIcon = document.getElementById('theme-icon-dark');
-                const enableDarkMode = () => { document.body.classList.add('dark-mode'); localStorage.setItem('theme', 'dark'); lightIcon.classList.add('hidden'); darkIcon.classList.remove('hidden'); };
-                const disableDarkMode = () => { document.body.classList.remove('dark-mode'); localStorage.setItem('theme', 'light'); lightIcon.classList.remove('hidden'); darkIcon.classList.add('hidden'); };
-                themeToggle.addEventListener('click', () => document.body.classList.contains('dark-mode') ? disableDarkMode() : enableDarkMode());
+                 const themeToggles = [
+                    document.getElementById('theme-toggle-desktop'),
+                    document.getElementById('theme-toggle-mobile')
+                ];
+                const lightIcons = [
+                    document.getElementById('theme-icon-light-desktop'),
+                    document.getElementById('theme-icon-light-mobile')
+                ];
+                const darkIcons = [
+                    document.getElementById('theme-icon-dark-desktop'),
+                    document.getElementById('theme-icon-dark-mobile')
+                ];
+
+                const enableDarkMode = () => {
+                    document.body.classList.add('dark-mode');
+                    localStorage.setItem('theme', 'dark');
+                    lightIcons.forEach(icon => icon.classList.add('hidden'));
+                    darkIcons.forEach(icon => icon.classList.remove('hidden'));
+                    fetchDashboardData(); // Redraw charts with new theme
+                };
+                const disableDarkMode = () => {
+                    document.body.classList.remove('dark-mode');
+                    localStorage.setItem('theme', 'light');
+                    lightIcons.forEach(icon => icon.classList.remove('hidden'));
+                    darkIcons.forEach(icon => icon.classList.add('hidden'));
+                    fetchDashboardData(); // Redraw charts with new theme
+                };
+
+                themeToggles.forEach(toggle => {
+                    toggle.addEventListener('click', () => {
+                        document.body.classList.contains('dark-mode') ? disableDarkMode() : enableDarkMode();
+                    });
+                });
+
                 if (localStorage.getItem('theme') === 'dark') enableDarkMode(); else disableDarkMode();
             }
 
             function setupLanguageSwitch() {
-                document.getElementById('language-toggle-button').addEventListener('click', () => document.getElementById('language-dropdown').classList.toggle('hidden'));
+                const langToggles = [
+                    document.getElementById('language-toggle-button-desktop'),
+                    document.getElementById('language-toggle-button-mobile')
+                ];
+                const langDropdowns = [
+                    document.getElementById('language-dropdown-desktop'),
+                    document.getElementById('language-dropdown-mobile')
+                ];
+
+                langToggles.forEach((toggle, index) => {
+                    toggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        langDropdowns[index].classList.toggle('hidden');
+                    });
+                });
+
                 document.querySelectorAll('[data-lang]').forEach(link => {
                     link.addEventListener('click', (e) => {
                         e.preventDefault();
                         currentLanguage = e.target.dataset.lang;
                         localStorage.setItem('language', currentLanguage);
                         updateContentLanguage();
-                        document.getElementById('language-dropdown').classList.add('hidden');
-                        // Redraw charts if language changes, as labels might need translation
+                        langDropdowns.forEach(dd => dd.classList.add('hidden'));
                         fetchDashboardData(); 
                     });
                 });
+                
+                window.addEventListener('click', () => langDropdowns.forEach(dd => dd.classList.add('hidden')));
             }
             
-            document.getElementById('logout-button').addEventListener('click', () => {
-                sessionStorage.removeItem('dbs_admin_logged_in');
-                window.location.href = 'login.html';
-            });
+            function setupMobileMenu() {
+                const mobileMenu = document.getElementById('mobile-menu');
+                const openButton = document.getElementById('mobile-menu-button');
+                const closeButton = document.getElementById('close-mobile-menu');
+
+                openButton.addEventListener('click', () => mobileMenu.classList.remove('hidden'));
+                closeButton.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            }
+            
+            function setupLogoutButtons() {
+                const logoutButtons = [
+                    document.getElementById('logout-button-desktop'),
+                    document.getElementById('logout-button-mobile')
+                ];
+                logoutButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        sessionStorage.removeItem('dbs_admin_logged_in');
+                        window.location.href = 'login.html';
+                    });
+                });
+            }
 
             async function fetchDashboardData() {
-                // In a real application, you would fetch this from an API endpoint
-                // const response = await fetch('https://dbs-back.vercel.app/api/dashboard-stats');
-                // const data = await response.json();
-                
                 // For demonstration, we use mock data
                 const mockData = {
                     summary: {
@@ -206,21 +296,18 @@
             let topCountriesChartInstance;
 
             function renderDashboard(data) {
-                // Render stat cards
                 document.getElementById('stat-total-today').textContent = data.summary.totalToday.toLocaleString();
                 document.getElementById('stat-success').textContent = data.summary.successToday.toLocaleString();
                 document.getElementById('stat-error').textContent = data.summary.errorToday.toLocaleString();
                 document.getElementById('stat-with-invoice').textContent = data.summary.withInvoice.toLocaleString();
 
-                const isDarkMode = localStorage.getItem('theme') === 'dark';
+                const isDarkMode = document.body.classList.contains('dark-mode');
                 const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
                 const textColor = isDarkMode ? '#d1d5db' : '#1f2937';
                 
-                // Destroy existing charts before rendering new ones
                 if (dailyVolumeChartInstance) dailyVolumeChartInstance.destroy();
                 if (topCountriesChartInstance) topCountriesChartInstance.destroy();
 
-                // Render Daily Volume Chart (Bar)
                 const dailyVolumeCtx = document.getElementById('dailyVolumeChart').getContext('2d');
                 dailyVolumeChartInstance = new Chart(dailyVolumeCtx, {
                     type: 'bar',
@@ -252,7 +339,6 @@
                     }
                 });
 
-                // Render Top Countries Chart (Doughnut)
                 const topCountriesCtx = document.getElementById('topCountriesChart').getContext('2d');
                 topCountriesChartInstance = new Chart(topCountriesCtx, {
                     type: 'doughnut',
@@ -262,11 +348,11 @@
                             label: 'Shipments',
                             data: data.topCountries.map(c => c.count),
                             backgroundColor: [
-                                'rgba(251, 191, 36, 0.7)', // yellow-400
-                                'rgba(220, 38, 38, 0.7)',  // red-600
-                                'rgba(107, 114, 128, 0.7)',// gray-500
-                                'rgba(249, 115, 22, 0.7)', // orange-500
-                                'rgba(59, 130, 246, 0.7)' // blue-500
+                                'rgba(251, 191, 36, 0.7)',
+                                'rgba(220, 38, 38, 0.7)',
+                                'rgba(107, 114, 128, 0.7)',
+                                'rgba(249, 115, 22, 0.7)',
+                                'rgba(59, 130, 246, 0.7)'
                             ],
                             borderColor: isDarkMode ? '#1f2937' : '#fff',
                             borderWidth: 2,
@@ -287,6 +373,8 @@
             
             setupTheme();
             setupLanguageSwitch();
+            setupMobileMenu();
+            setupLogoutButtons();
             updateContentLanguage();
             fetchDashboardData();
         });
