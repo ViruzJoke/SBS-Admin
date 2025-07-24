@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .nav-link { padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; transition: background-color 0.2s; }
-        .nav-link.active { background-color: #fca5a5; color: #b91c1c; }
+        .nav-link.active { background-color: #fca5a5; color: #b91c1c; cursor: default; }
         .dark-mode .nav-link.active { background-color: #4b5563; color: #f9fafb; }
         .nav-link:not(.active):hover { background-color: #f3f4f6; }
         .dark-mode .nav-link:not(.active):hover { background-color: #374151; }
@@ -20,81 +20,38 @@
 </head>
 <body>
 
-    <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-30">
-        <!-- [FIXED] Removed <a> tag from this div -->
+    <!-- [FIXED] Simplified Header with White Background -->
+    <header class="bg-white shadow-md py-4 px-6 md:px-10 flex flex-wrap justify-between items-center sticky top-0 z-30 gap-4">
         <div class="flex items-center">
             <span class="text-4xl font-bold text-red-600">DHL</span>
-            <span class="ml-2 text-xl font-semibold text-gray-800 dark:text-gray-200">Admin Panel</span>
+            <span class="ml-2 text-xl font-semibold text-gray-800">Admin Panel</span>
         </div>
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden lg:flex items-center space-x-2">
-            <a href="dashboard.html" class="nav-link active" data-i18n="navDashboard">Dashboard</a>
-            <a href="index.html" class="nav-link" data-i18n="navSearch">Search</a>
-        </nav>
-        
-        <!-- [FIXED] Desktop Controls Wrapper -->
-        <div class="hidden lg:flex items-center space-x-2 sm:space-x-4">
-            <div class="relative">
-                <button id="language-toggle-button-desktop" class="utility-button px-4 py-2 flex items-center gap-2">
-                    <span id="current-language-display-desktop">TH</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div id="language-dropdown-desktop" class="language-dropdown absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg hidden z-20 dark:bg-gray-700">
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="th">ภาษาไทย</a>
-                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="en">English</a>
+        <div class="flex items-center space-x-4">
+            <!-- [FIXED] Navigation Button -->
+            <nav>
+                <a href="index.html" class="nav-link" data-i18n="navSearch">Search</a>
+            </nav>
+            
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <div class="relative">
+                    <button id="language-toggle-button" class="utility-button px-4 py-2 flex items-center gap-2">
+                        <span id="current-language-display">TH</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div id="language-dropdown" class="language-dropdown absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg hidden z-20 dark:bg-gray-700">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="th">ภาษาไทย</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="en">English</a>
+                    </div>
                 </div>
+                <button id="theme-toggle" class="utility-button">
+                    <svg id="theme-icon-light" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+                <button id="logout-button" class="btn-primary btn-gray" data-i18n="logout">Logout</button>
             </div>
-            <button id="theme-toggle-desktop" class="utility-button">
-                <svg id="theme-icon-light-desktop" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                <svg id="theme-icon-dark-desktop" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-            </button>
-            <button id="logout-button-desktop" class="btn-primary btn-gray" data-i18n="logout">Logout</button>
-        </div>
-
-        <!-- Mobile Menu Button -->
-        <div class="lg:hidden">
-            <button id="mobile-menu-button" class="utility-button">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
         </div>
     </header>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden lg:hidden fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-75 z-40">
-        <div class="fixed top-0 right-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg p-6 z-50">
-            <button id="close-mobile-menu" class="absolute top-4 right-4 text-gray-600 dark:text-gray-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-            <nav class="mt-10 flex flex-col space-y-4">
-                 <a href="dashboard.html" class="nav-link active" data-i18n="navDashboard">Dashboard</a>
-                 <a href="index.html" class="nav-link" data-i18n="navSearch">Search</a>
-                 <hr class="dark:border-gray-600">
-                 <div class="flex justify-between items-center">
-                    <span class="font-medium dark:text-gray-300">Language</span>
-                    <div class="relative">
-                         <button id="language-toggle-button-mobile" class="utility-button px-4 py-2 flex items-center gap-2">
-                            <span id="current-language-display-mobile">TH</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </button>
-                        <div id="language-dropdown-mobile" class="language-dropdown absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg hidden z-20 dark:bg-gray-700">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="th">ภาษาไทย</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600" data-lang="en">English</a>
-                        </div>
-                    </div>
-                 </div>
-                 <div class="flex justify-between items-center">
-                    <span class="font-medium dark:text-gray-300">Theme</span>
-                    <button id="theme-toggle-mobile" class="utility-button">
-                        <svg id="theme-icon-light-mobile" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                        <svg id="theme-icon-dark-mobile" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                    </button>
-                 </div>
-                 <hr class="dark:border-gray-600">
-                 <button id="logout-button-mobile" class="w-full btn-primary btn-gray" data-i18n="logout">Logout</button>
-            </nav>
-        </div>
-    </div>
 
     <main class="container py-8">
         <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
@@ -187,6 +144,7 @@
             const dateFromInput = document.getElementById('dateFrom');
             const dateToInput = document.getElementById('dateTo');
             const fetchDataButton = document.getElementById('fetch-data-button');
+            const logoutButton = document.getElementById('logout-button');
 
             function updateContentLanguage() {
                 document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -195,63 +153,43 @@
                        el.textContent = translations[currentLanguage][key] || key;
                     }
                 });
-                document.getElementById('current-language-display-desktop').textContent = currentLanguage.toUpperCase();
-                document.getElementById('current-language-display-mobile').textContent = currentLanguage.toUpperCase();
+                document.getElementById('current-language-display').textContent = currentLanguage.toUpperCase();
             }
 
             function setupTheme() {
-                 const themeToggles = [
-                    document.getElementById('theme-toggle-desktop'),
-                    document.getElementById('theme-toggle-mobile')
-                ];
-                const lightIcons = [
-                    document.getElementById('theme-icon-light-desktop'),
-                    document.getElementById('theme-icon-light-mobile')
-                ];
-                const darkIcons = [
-                    document.getElementById('theme-icon-dark-desktop'),
-                    document.getElementById('theme-icon-dark-mobile')
-                ];
+                const themeToggle = document.getElementById('theme-toggle');
+                const lightIcon = document.getElementById('theme-icon-light');
+                const darkIcon = document.getElementById('theme-icon-dark');
 
                 const enableDarkMode = () => {
                     document.body.classList.add('dark-mode');
                     localStorage.setItem('theme', 'dark');
-                    lightIcons.forEach(icon => icon.classList.add('hidden'));
-                    darkIcons.forEach(icon => icon.classList.remove('hidden'));
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
                     fetchAndRenderData();
                 };
                 const disableDarkMode = () => {
                     document.body.classList.remove('dark-mode');
                     localStorage.setItem('theme', 'light');
-                    lightIcons.forEach(icon => icon.classList.remove('hidden'));
-                    darkIcons.forEach(icon => icon.classList.add('hidden'));
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
                     fetchAndRenderData();
                 };
 
-                themeToggles.forEach(toggle => {
-                    toggle.addEventListener('click', () => {
-                        document.body.classList.contains('dark-mode') ? disableDarkMode() : enableDarkMode();
-                    });
+                themeToggle.addEventListener('click', () => {
+                    document.body.classList.contains('dark-mode') ? disableDarkMode() : enableDarkMode();
                 });
 
                 if (localStorage.getItem('theme') === 'dark') enableDarkMode(); else disableDarkMode();
             }
 
             function setupLanguageSwitch() {
-                const langToggles = [
-                    document.getElementById('language-toggle-button-desktop'),
-                    document.getElementById('language-toggle-button-mobile')
-                ];
-                const langDropdowns = [
-                    document.getElementById('language-dropdown-desktop'),
-                    document.getElementById('language-dropdown-mobile')
-                ];
+                const langToggle = document.getElementById('language-toggle-button');
+                const langDropdown = document.getElementById('language-dropdown');
 
-                langToggles.forEach((toggle, index) => {
-                    toggle.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        langDropdowns[index].classList.toggle('hidden');
-                    });
+                langToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    langDropdown.classList.toggle('hidden');
                 });
 
                 document.querySelectorAll('[data-lang]').forEach(link => {
@@ -260,35 +198,18 @@
                         currentLanguage = e.target.dataset.lang;
                         localStorage.setItem('language', currentLanguage);
                         updateContentLanguage();
-                        langDropdowns.forEach(dd => dd.classList.add('hidden'));
+                        langDropdown.classList.add('hidden');
                         fetchAndRenderData(); 
                     });
                 });
                 
-                window.addEventListener('click', () => langDropdowns.forEach(dd => dd.classList.add('hidden')));
+                window.addEventListener('click', () => langDropdown.classList.add('hidden'));
             }
             
-            function setupMobileMenu() {
-                const mobileMenu = document.getElementById('mobile-menu');
-                const openButton = document.getElementById('mobile-menu-button');
-                const closeButton = document.getElementById('close-mobile-menu');
-
-                openButton.addEventListener('click', () => mobileMenu.classList.remove('hidden'));
-                closeButton.addEventListener('click', () => mobileMenu.classList.add('hidden'));
-            }
-            
-            function setupLogoutButtons() {
-                const logoutButtons = [
-                    document.getElementById('logout-button-desktop'),
-                    document.getElementById('logout-button-mobile')
-                ];
-                logoutButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        sessionStorage.removeItem('dbs_admin_logged_in');
-                        window.location.href = 'login.html';
-                    });
-                });
-            }
+            logoutButton.addEventListener('click', () => {
+                sessionStorage.removeItem('dbs_admin_logged_in');
+                window.location.href = 'login.html';
+            });
             
             function setDefaultDates() {
                 const today = new Date();
@@ -317,8 +238,7 @@
                 }
 
                 // --- [IMPORTANT] DATA FETCHING ---
-                // This function now uses MOCK DATA because the real API is not ready.
-                // To switch to REAL aPI, comment out the getMockData() line and uncomment the fetch() block.
+                // To switch to REAL API, comment out the getMockData() line and uncomment the fetch() block.
                 try {
                     const data = getMockData(); // Using mock data for now
                     renderDashboard(data);
@@ -351,7 +271,6 @@
                 */
             }
             
-            // [NEW] Mock data function for demonstration
             function getMockData() {
                 console.log("Using Mock Data for Dashboard");
                 return {
@@ -434,8 +353,6 @@
             
             setupTheme();
             setupLanguageSwitch();
-            setupMobileMenu();
-            setupLogoutButtons();
             setDefaultDates();
             updateContentLanguage();
             fetchAndRenderData();
