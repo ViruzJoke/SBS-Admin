@@ -120,17 +120,17 @@
 
         <!-- Charts -->
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            <div class="lg:col-span-3 stat-card">
-                <h3 class="text-lg font-semibold mb-4" data-i18n="chartDailyVolume">Daily Volume (Last 7 Days)</h3>
-                <!-- [FIXED] Added container with relative position and height -->
-                <div class="relative h-80">
+            <!-- [FIXED] Changed structure for robust height control -->
+            <div class="lg:col-span-3 stat-card h-96 flex flex-col">
+                <h3 class="text-lg font-semibold mb-4 flex-shrink-0" data-i18n="chartDailyVolume">Daily Volume (Last 7 Days)</h3>
+                <div class="relative flex-grow">
                     <canvas id="dailyVolumeChart"></canvas>
                 </div>
             </div>
-            <div class="lg:col-span-2 stat-card">
-                 <h3 class="text-lg font-semibold mb-4" data-i18n="chartTopCountries">Top 5 Receiver Countries</h3>
-                 <!-- [FIXED] Added container with relative position and height -->
-                <div class="relative h-80">
+            <!-- [FIXED] Changed structure for robust height control -->
+            <div class="lg:col-span-2 stat-card h-96 flex flex-col">
+                 <h3 class="text-lg font-semibold mb-4 flex-shrink-0" data-i18n="chartTopCountries">Top 5 Receiver Countries</h3>
+                <div class="relative flex-grow">
                     <canvas id="topCountriesChart"></canvas>
                 </div>
             </div>
