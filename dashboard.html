@@ -21,11 +21,10 @@
 <body>
 
     <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-30">
+        <!-- [FIXED] Removed <a> tag from this div -->
         <div class="flex items-center">
-             <a href="dashboard.html" class="flex items-center">
-                <span class="text-4xl font-bold text-red-600">DHL</span>
-                <span class="ml-2 text-xl font-semibold text-gray-800 dark:text-gray-200">Admin Panel</span>
-            </a>
+            <span class="text-4xl font-bold text-red-600">DHL</span>
+            <span class="ml-2 text-xl font-semibold text-gray-800 dark:text-gray-200">Admin Panel</span>
         </div>
 
         <!-- Desktop Navigation -->
@@ -33,6 +32,8 @@
             <a href="dashboard.html" class="nav-link active" data-i18n="navDashboard">Dashboard</a>
             <a href="index.html" class="nav-link" data-i18n="navSearch">Search</a>
         </nav>
+        
+        <!-- [FIXED] Desktop Controls Wrapper -->
         <div class="hidden lg:flex items-center space-x-2 sm:space-x-4">
             <div class="relative">
                 <button id="language-toggle-button-desktop" class="utility-button px-4 py-2 flex items-center gap-2">
@@ -98,7 +99,6 @@
     <main class="container py-8">
         <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
             <h1 class="text-3xl font-bold" data-i18n="dashboardTitle">Dashboard</h1>
-             <!-- [NEW] Date Range Filter -->
             <div class="flex flex-wrap items-center gap-2">
                 <div>
                     <label for="dateFrom" class="text-sm font-medium" data-i18n="dateFrom">From</label>
@@ -115,7 +115,7 @@
         <div id="loading-indicator" class="text-center py-8 hidden"><p data-i18n="loading">Loading data...</p></div>
         <div id="error-message" class="text-center py-8 hidden text-red-500"></div>
 
-        <div id="dashboard-content" class="hidden">
+        <div id="dashboard-content">
             <!-- Stat Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <div class="stat-card">
@@ -169,14 +169,14 @@
                     'dashboardTitle': 'แดชบอร์ดภาพรวม', 'dateFrom': 'จาก', 'dateTo': 'ถึง', 'getData': 'แสดงข้อมูล',
                     'statTotal': 'ยอดชิปเมนต์ทั้งหมด', 'statSuccess': 'สำเร็จ', 'statError': 'ผิดพลาด', 'statWithInvoice': 'มีใบแจ้งหนี้',
                     'chartDailyVolume': 'ปริมาณงานรายวัน', 'chartTopCountries': '5 ประเทศผู้รับสูงสุด',
-                    'loading': 'กำลังโหลดข้อมูล...', 'errorFetch': 'ไม่สามารถดึงข้อมูลได้ กรุณาลองใหม่'
+                    'loading': 'กำลังโหลดข้อมูล...', 'errorFetch': 'ไม่สามารถดึงข้อมูลได้ กรุณาตรวจสอบ API หรือลองใหม่'
                 },
                 'en': {
                     'navDashboard': 'Dashboard', 'navSearch': 'Search', 'logout': 'Logout',
                     'dashboardTitle': 'Overview Dashboard', 'dateFrom': 'From', 'dateTo': 'To', 'getData': 'Get Data',
                     'statTotal': 'Total Shipments', 'statSuccess': 'Successful', 'statError': 'Errors', 'statWithInvoice': 'With Invoice',
                     'chartDailyVolume': 'Daily Volume', 'chartTopCountries': 'Top 5 Receiver Countries',
-                    'loading': 'Loading data...', 'errorFetch': 'Could not fetch data. Please try again.'
+                    'loading': 'Loading data...', 'errorFetch': 'Could not fetch data. Please check the API or try again.'
                 }
             };
             let currentLanguage = localStorage.getItem('language') || 'th';
@@ -218,14 +218,14 @@
                     localStorage.setItem('theme', 'dark');
                     lightIcons.forEach(icon => icon.classList.add('hidden'));
                     darkIcons.forEach(icon => icon.classList.remove('hidden'));
-                    fetchDashboardData();
+                    fetchAndRenderData();
                 };
                 const disableDarkMode = () => {
                     document.body.classList.remove('dark-mode');
                     localStorage.setItem('theme', 'light');
                     lightIcons.forEach(icon => icon.classList.remove('hidden'));
                     darkIcons.forEach(icon => icon.classList.add('hidden'));
-                    fetchDashboardData();
+                    fetchAndRenderData();
                 };
 
                 themeToggles.forEach(toggle => {
@@ -261,7 +261,7 @@
                         localStorage.setItem('language', currentLanguage);
                         updateContentLanguage();
                         langDropdowns.forEach(dd => dd.classList.add('hidden'));
-                        fetchDashboardData(); 
+                        fetchAndRenderData(); 
                     });
                 });
                 
@@ -293,21 +293,15 @@
             function setDefaultDates() {
                 const today = new Date();
                 const sevenDaysAgo = new Date();
-                sevenDaysAgo.setDate(today.getDate() - 6); // 7 days including today
+                sevenDaysAgo.setDate(today.getDate() - 6);
 
-                // Format to YYYY-MM-DD
-                const toISODateString = (date) => {
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    return `${year}-${month}-${day}`;
-                }
+                const toISODateString = (date) => date.toISOString().split('T')[0];
 
                 dateToInput.value = toISODateString(today);
                 dateFromInput.value = toISODateString(sevenDaysAgo);
             }
 
-            async function fetchDashboardData() {
+            async function fetchAndRenderData() {
                 loadingIndicator.classList.remove('hidden');
                 dashboardContent.classList.add('hidden');
                 errorMessageDiv.classList.add('hidden');
@@ -322,6 +316,23 @@
                     return;
                 }
 
+                // --- [IMPORTANT] DATA FETCHING ---
+                // This function now uses MOCK DATA because the real API is not ready.
+                // To switch to REAL aPI, comment out the getMockData() line and uncomment the fetch() block.
+                try {
+                    const data = getMockData(); // Using mock data for now
+                    renderDashboard(data);
+                    dashboardContent.classList.remove('hidden');
+                } catch (error) {
+                     console.error('Error processing data:', error);
+                    errorMessageDiv.textContent = translations[currentLanguage]['errorFetch'];
+                    errorMessageDiv.classList.remove('hidden');
+                } finally {
+                    loadingIndicator.classList.add('hidden');
+                }
+
+                /*
+                // --- REAL API CALL (currently disabled) ---
                 try {
                     const response = await fetch(`${API_BASE_URL}/dashboard-stats?dateFrom=${dateFrom}&dateTo=${dateTo}`);
                     if (!response.ok) {
@@ -337,7 +348,38 @@
                 } finally {
                     loadingIndicator.classList.add('hidden');
                 }
+                */
             }
+            
+            // [NEW] Mock data function for demonstration
+            function getMockData() {
+                console.log("Using Mock Data for Dashboard");
+                return {
+                    summary: {
+                        totalShipments: 1078,
+                        successful: 950,
+                        errors: 128,
+                        withInvoice: 652,
+                    },
+                    dailyVolume: [
+                        { date: 'Jul 18', count: 145 },
+                        { date: 'Jul 19', count: 162 },
+                        { date: 'Jul 20', count: 130 },
+                        { date: 'Jul 21', count: 180 },
+                        { date: 'Jul 22', count: 175 },
+                        { date: 'Jul 23', count: 166 },
+                        { date: 'Jul 24', count: 120 },
+                    ],
+                    topCountries: [
+                        { country: 'US', count: 350 },
+                        { country: 'CN', count: 280 },
+                        { country: 'TH', count: 190 },
+                        { country: 'SG', count: 150 },
+                        { country: 'DE', count: 108 },
+                    ]
+                };
+            }
+
 
             let dailyVolumeChartInstance;
             let topCountriesChartInstance;
@@ -388,7 +430,7 @@
                 });
             }
             
-            fetchDataButton.addEventListener('click', fetchDashboardData);
+            fetchDataButton.addEventListener('click', fetchAndRenderData);
             
             setupTheme();
             setupLanguageSwitch();
@@ -396,7 +438,7 @@
             setupLogoutButtons();
             setDefaultDates();
             updateContentLanguage();
-            fetchDashboardData();
+            fetchAndRenderData();
         });
     </script>
 </body>

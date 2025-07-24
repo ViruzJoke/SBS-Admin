@@ -38,11 +38,10 @@
 <body>
 
     <header class="bg-white dark:bg-gray-800 shadow-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-30">
+        <!-- [FIXED] Removed <a> tag from this div -->
         <div class="flex items-center">
-            <a href="dashboard.html" class="flex items-center">
-                <span class="text-4xl font-bold text-red-600">DHL</span>
-                <span class="ml-2 text-xl font-semibold text-gray-800 dark:text-gray-200">Admin Panel</span>
-            </a>
+            <span class="text-4xl font-bold text-red-600">DHL</span>
+            <span class="ml-2 text-xl font-semibold text-gray-800 dark:text-gray-200">Admin Panel</span>
         </div>
 
         <!-- Desktop Navigation -->
@@ -50,6 +49,8 @@
             <a href="dashboard.html" class="nav-link" data-i18n="navDashboard">Dashboard</a>
             <a href="index.html" class="nav-link active" data-i18n="navSearch">Search</a>
         </nav>
+        
+        <!-- [FIXED] Desktop Controls Wrapper -->
         <div class="hidden lg:flex items-center space-x-2 sm:space-x-4">
             <div class="relative">
                 <button id="language-toggle-button-desktop" class="utility-button px-4 py-2 flex items-center gap-2">
@@ -595,16 +596,20 @@
                     
                     let downloadsCellContent;
                     if (log.log_type === 'Error') {
-                        // [FIXED] Robustly display respond_warnings
-                        let warningText = log.respond_warnings || 'No warning message provided.';
-                        try {
-                            // Attempt to parse if it's a JSON string
-                            const parsed = JSON.parse(warningText);
-                            if (parsed && parsed.warnings && Array.isArray(parsed.warnings)) {
-                                warningText = parsed.warnings.map(w => w.message).join('; ');
+                        // [FIXED] More robustly display respond_warnings
+                        let warningText = log.respond_warnings;
+                        if (warningText) {
+                             try {
+                                // Attempt to parse if it's a JSON string, which is common
+                                const parsed = JSON.parse(warningText);
+                                if (parsed && parsed.warnings && Array.isArray(parsed.warnings) && parsed.warnings.length > 0) {
+                                    warningText = parsed.warnings.map(w => w.message || 'Warning').join('; ');
+                                }
+                            } catch (e) {
+                                // It's not a valid JSON string, display it as is.
                             }
-                        } catch (e) {
-                            // It's not a valid JSON string, so we display it as is.
+                        } else {
+                            warningText = 'No specific warning message provided.';
                         }
                         downloadsCellContent = `<span class="text-red-500 text-xs">${warningText}</span>`;
                     } else {
