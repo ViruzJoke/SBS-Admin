@@ -1,6 +1,7 @@
 /*
   DHL Backup Solution - Central Stylesheet v10.5
   แก้ไข Progress Bar ให้แม่นยำและข้อความไม่ตกบรรทัด
+  [FIX] แก้ไขปัญหา Scrollbar หาย
 */
 
 /* --- Base and Layout --- */
@@ -280,7 +281,7 @@ body.dark-mode .timeline-location { color: #9ca3af; }
 /* Faded Background Style */
 .with-faded-bg {
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; <-- THIS WAS THE PROBLEM, REMOVED IT */
 }
 
 .with-faded-bg::before {
