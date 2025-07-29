@@ -7,33 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
 	<link rel="icon" href="DBS_Icon2.jpg" type="image/jpg">
-    <style>
-        /* [FIX] จัด Body ให้อยู่กึ่งกลางหน้าจอ */
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 1rem; /* Add some padding for smaller screens */
-        }
-        .login-card {
-            max-width: 400px;
-            width: 100%;
-        }
-    </style>
+    <!-- ไม่ต้องมี <style> ในนี้แล้ว -->
 </head>
-<body>
-    <!-- [FIX] นำ <main> ออกเพื่อให้ card อยู่กึ่งกลางโดยตรงจาก body flexbox -->
+<!-- เพิ่ม class ใหม่ที่ body เพื่อเรียกใช้สไตล์จาก styles.css -->
+<body class="layout-centered with-faded-bg">
+    
     <div class="card login-card">
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-red-600">DHL</h1>
-            <!-- [FIX] แก้ไขสีข้อความเป็นสีเทาเข้ม -->
             <h2 class="text-2xl font-semibold text-black-900 dark:text-black-200 mt-2">Admin Panel</h2>
         </div>
         
         <form id="login-form" class="space-y-6">
             <div>
-                <!-- [FIX] แก้ไขสีข้อความ Label เป็นสีเทาเข้ม -->
                 <label for="username" class="block text-sm font-medium text-black-900 dark:text-black-300">Username</label>
                 <div class="mt-1">
                     <input id="username" name="username" type="text" required class="input-field">
@@ -41,9 +27,7 @@
             </div>
 
             <div>
-                <!-- [FIX] แก้ไขสีข้อความ Label เป็นสีเทาเข้ม -->
                 <label for="password" class="block text-sm font-medium text-black-900 dark:text-black-300">Password</label>
-                <!-- [NEW] Added relative positioning and the toggle button -->
                 <div class="mt-1 relative">
                     <input id="password" name="password" type="password" required class="input-field pr-10">
                     <button type="button" id="toggle-password-visibility" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
@@ -78,18 +62,13 @@
             const loginButtonText = document.getElementById('login-button-text');
             const loginSpinner = document.getElementById('login-spinner');
             
-            // [NEW] Elements for password visibility toggle
             const passwordInput = document.getElementById('password');
             const toggleButton = document.getElementById('toggle-password-visibility');
             const eyeIcon = document.getElementById('eye-icon');
             const eyeSlashIcon = document.getElementById('eye-slash-icon');
 
-            // [NEW] Event listener for the toggle button
             toggleButton.addEventListener('click', () => {
-                // Check the current type of the password input
                 const isPassword = passwordInput.type === 'password';
-                
-                // Set the new type and toggle icon visibility
                 passwordInput.type = isPassword ? 'text' : 'password';
                 eyeIcon.classList.toggle('hidden', isPassword);
                 eyeSlashIcon.classList.toggle('hidden', !isPassword);
