@@ -513,28 +513,33 @@
                         ? `<span class="text-red-500 font-bold">Error</span>`
                         : `<span class="font-medium text-red-600 dark:text-amber-400">${log.respond_trackingnumber || ''}</span>`;
                     
+                    // --- MODIFICATION START: Format error messages ---
                     let downloadsCellContent;
                     if (log.log_type === 'Error') {
-                        let warningText = log.respond_warnings;
-                        if (warningText) {
-                             try {
-                                const parsed = JSON.parse(warningText);
-                                if (parsed && parsed.warnings && Array.isArray(parsed.warnings) && parsed.warnings.length > 0) {
-                                    warningText = parsed.warnings.map(w => w.message || 'Warning').join('; ');
-                                }
-                            } catch (e) {
-                                // Not a JSON string, display as is.
+                        let warningText = log.respond_warnings || 'Error log without specific warning.';
+
+                        if (warningText.includes('Additional Details:')) {
+                            const mainParts = warningText.split('; Additional Details:');
+                            let formattedHtml = mainParts[0] + ';'; 
+
+                            if (mainParts.length > 1) {
+                                formattedHtml += '<br><b>Additional Details:</b>';
+                                const details = mainParts[1].split(';').filter(d => d.trim() !== '');
+                                details.forEach(detail => {
+                                    formattedHtml += `<br>- ${detail.trim()}`;
+                                });
                             }
-                        } else {
-                            warningText = 'Error log without specific warning.';
+                            warningText = formattedHtml;
                         }
-                        downloadsCellContent = `<span class="text-red-500 text-xs">${warningText}</span>`;
+                        
+                        downloadsCellContent = `<div class="text-red-500 text-xs text-left">${warningText}</div>`;
                     } else {
                         const labelButton = log.respond_label ? `<button class="btn-download btn-download-label" data-pdf-type="label">${translations[currentLanguage]['downloadLabel']}</button>` : '';
                         const receiptButton = log.respond_receipt ? `<button class="btn-download btn-download-doc" data-pdf-type="receipt">${translations[currentLanguage]['downloadReceipt']}</button>` : '';
                         const invoiceButton = log.respond_invoice ? `<button class="btn-download btn-download-doc" data-pdf-type="invoice">${translations[currentLanguage]['downloadInvoice']}</button>` : '';
-                        downloadsCellContent = `${labelButton} ${receiptButton} ${invoiceButton}`;
+                        downloadsCellContent = `<div class="flex flex-col space-y-1 md:flex-row md:space-y-0 md:space-x-1">${labelButton}${receiptButton}${invoiceButton}</div>`;
                     }
+                    // --- MODIFICATION END ---
 
 
                     row.innerHTML = `
@@ -551,7 +556,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.request_reference || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${accountDisplay}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.booking_ref || ''}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm space-x-1">${downloadsCellContent}</td>
+                        <td class="px-6 py-4 text-sm space-x-1">${downloadsCellContent}</td>
                     `;
                     resultsTbody.appendChild(row);
 
@@ -579,10 +584,10 @@
                 const totalPages = Math.ceil(allLogs.length / rowsPerPage);
                 pageInfoSpan.textContent = translations[currentLanguage]['pageInfo']
                     .replace('{currentPage}', currentPage)
-                    .replace('{totalPages}', totalPages);
+                    .replace('{totalPages}', totalPages || 1);
                 
                 prevPageBtn.disabled = currentPage === 1;
-                nextPageBtn.disabled = currentPage === totalPages;
+                nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
             }
 
             function updateSortIndicators() {
@@ -602,7 +607,7 @@
                             sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
                         } else {
                             sortColumn = newSortColumn;
-                            sortDirection = 'asc';
+                            sortDirection = 'asc'; // Default to ascending when changing column
                         }
                         sortData();
                         currentPage = 1;
