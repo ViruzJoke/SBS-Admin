@@ -167,6 +167,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="respond_trackingnumber"><span data-i18n="colTracking">Tracking #</span><span class="sort-indicator"></span></th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="shipper_name"><span data-i18n="colShipper">Shipper</span><span class="sort-indicator"></span></th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="receiver_name"><span data-i18n="colReceiver">Receiver</span><span class="sort-indicator"></span></th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="shipper_email"><span data-i18n="colEmail">Email</span><span class="sort-indicator"></span></th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="request_reference"><span data-i18n="colRef">Reference</span><span class="sort-indicator"></span></th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" data-i18n="colAccount">Account</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider sortable-header" data-sort="booking_ref"><span data-i18n="colBookingRef">Booking Ref</span><span class="sort-indicator"></span></th>
@@ -199,7 +200,7 @@
                     'receiverName': 'ชื่อ/บริษัทผู้รับ', 'reference': 'เลขที่อ้างอิง', 'bookingReference': 'Booking Reference', 'accountNumber': 'หมายเลขบัญชี', 'phone': 'เบอร์โทรศัพท์', 'email': 'อีเมล', 'shipperCountry': 'ประเทศผู้ส่ง',
                     'receiverCountry': 'ประเทศผู้รับ', 'dateFrom': 'จากวันที่', 'dateTo': 'ถึงวันที่', 'timeFrom': 'จากเวลา', 'timeTo': 'ถึงเวลา',
                     'search': 'ค้นหา', 'clear': 'ล้างค่า', 'loading': 'กำลังโหลดข้อมูล...', 'noResults': 'ไม่พบข้อมูลตามเงื่อนไขที่เลือก', 'colDate': 'วันที่', 
-                    'colTracking': 'หมายเลขติดตาม', 'colShipper': 'ผู้ส่ง', 'colReceiver': 'ผู้รับ', 'colRef': 'อ้างอิง', 'colAccount': 'บัญชี', 'colBookingRef': 'Booking Ref', 'errorLoading': 'เกิดข้อผิดพลาดในการโหลดข้อมูล',
+                    'colTracking': 'หมายเลขติดตาม', 'colShipper': 'ผู้ส่ง', 'colReceiver': 'ผู้รับ', 'colEmail': 'อีเมล', 'colRef': 'อ้างอิง', 'colAccount': 'บัญชี', 'colBookingRef': 'Booking Ref', 'errorLoading': 'เกิดข้อผิดพลาดในการโหลดข้อมูล',
                     'colDownloads': 'ดาวน์โหลด / ข้อผิดพลาด', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'ดาวน์โหลดไฟล์ล้มเหลว',
                     'groupShipmentId': 'Shipment Detail', 'groupCustomerDetail': 'Customer Detail', 'groupDateTime': 'วันและเวลา', 'pageInfo': 'หน้า {currentPage} จาก {totalPages}',
                     'navDashboard': 'แดชบอร์ด', 'navSearch': 'ค้นหา', 'exportCsv': 'ส่งออกเป็น CSV'
@@ -209,7 +210,7 @@
                     'receiverName': 'Receiver Name/Company', 'reference': 'Reference', 'bookingReference': 'Booking Reference', 'accountNumber': 'Account Number', 'phone': 'Phone Number', 'email': 'E-mail', 'shipperCountry': 'Shipper Country',
                     'receiverCountry': 'Receiver Country', 'dateFrom': 'Date From', 'dateTo': 'Date To', 'timeFrom': 'From Time', 'timeTo': 'To Time',
                     'search': 'Search', 'clear': 'Clear', 'loading': 'Loading data...', 'noResults': 'No results found for the selected filters.', 'colDate': 'Date', 
-                    'colTracking': 'Tracking #', 'colShipper': 'Shipper', 'colReceiver': 'Receiver', 'colRef': 'Reference', 'colAccount': 'Account', 'colBookingRef': 'Booking Ref', 'errorLoading': 'Error loading data. Please try again.',
+                    'colTracking': 'Tracking #', 'colShipper': 'Shipper', 'colReceiver': 'Receiver', 'colEmail': 'Email', 'colRef': 'Reference', 'colAccount': 'Account', 'colBookingRef': 'Booking Ref', 'errorLoading': 'Error loading data. Please try again.',
                     'colDownloads': 'Downloads / Error', 'downloadLabel': 'Label', 'downloadReceipt': 'Receipt', 'downloadInvoice': 'Invoice', 'downloadFailed': 'Could not download the file',
                     'groupShipmentId': 'Shipment Detail', 'groupCustomerDetail': 'Customer Detail', 'groupDateTime': 'Date & Time', 'pageInfo': 'Page {currentPage} of {totalPages}',
                     'navDashboard': 'Dashboard', 'navSearch': 'Search', 'exportCsv': 'Export to CSV'
@@ -345,8 +346,8 @@
                     return;
                 }
                 const headers = [
-                    "Created At", "Log Type", "Tracking Number", "Shipper Name", "Shipper Company", "Shipper Country",
-                    "Receiver Name", "Receiver Company", "Receiver Country", "Request Reference", "Shipper Account", "Duty Account",
+                    "Created At", "Log Type", "Tracking Number", "Shipper Name", "Shipper Company", "Shipper Email", "Shipper Country",
+                    "Receiver Name", "Receiver Company", "Receiver Email", "Receiver Country", "Request Reference", "Shipper Account", "Duty Account",
                     "Booking Ref", "Respond Warnings"
                 ];
 
@@ -367,9 +368,11 @@
                         log.respond_trackingnumber,
                         log.shipper_name,
                         log.shipper_company,
+                        log.shipper_email,
                         log.shipper_country,
                         log.receiver_name,
                         log.receiver_company,
+                        log.receiver_email,
                         log.receiver_country,
                         log.request_reference,
                         log.shipper_account_number,
@@ -402,7 +405,8 @@
             });
             
             document.getElementById('clear-button').addEventListener('click', () => { 
-                filterForm.reset(); 
+                filterForm.reset();
+                setDefaultDates(); // Reset dates to today
                 toggleTimeFilter();
                 resultsContainer.classList.add('hidden');
                 noResultsDiv.classList.add('hidden');
@@ -450,7 +454,7 @@
                     renderTable();
                 } catch (error) {
                     console.error('Error fetching logs:', error);
-                    resultsTbody.innerHTML = `<tr><td colspan="8" class="text-center text-red-500 p-4" data-i18n="errorLoading"></td></tr>`;
+                    resultsTbody.innerHTML = `<tr><td colspan="9" class="text-center text-red-500 p-4" data-i18n="errorLoading"></td></tr>`;
                     updateContentLanguage();
                     resultsContainer.classList.remove('hidden');
                 } finally {
@@ -466,6 +470,12 @@
                     if (valA === null || valA === undefined) return 1;
                     if (valB === null || valB === undefined) return -1;
                     
+                    // Special handling for email sort to combine shipper and receiver
+                    if (sortColumn === 'shipper_email') {
+                        valA = a.shipper_email || a.receiver_email;
+                        valB = b.shipper_email || b.receiver_email;
+                    }
+
                     let comparison = 0;
                     if (valA > valB) {
                         comparison = 1;
@@ -517,7 +527,10 @@
                         ? `<span class="text-red-500 font-bold">Error</span>`
                         : `<span class="font-medium text-red-600 dark:text-amber-400">${log.respond_trackingnumber || ''}</span>`;
                     
-                    // --- MODIFICATION START: Format error messages ---
+                    const shipperEmail = log.shipper_email ? `<div class="text-xs">S: ${log.shipper_email}</div>` : '';
+                    const receiverEmail = log.receiver_email ? `<div class="text-xs">R: ${log.receiver_email}</div>` : '';
+                    const emailDisplay = `${shipperEmail}${receiverEmail}`;
+
                     let downloadsCellContent;
                     if (log.log_type === 'Error') {
                         let warningText = log.respond_warnings || 'Error log without specific warning.';
@@ -543,8 +556,6 @@
                         const invoiceButton = log.respond_invoice ? `<button class="btn-download btn-download-doc" data-pdf-type="invoice">${translations[currentLanguage]['downloadInvoice']}</button>` : '';
                         downloadsCellContent = `<div class="flex flex-col space-y-1 md:flex-row md:space-y-0 md:space-x-1">${labelButton}${receiptButton}${invoiceButton}</div>`;
                     }
-                    // --- MODIFICATION END ---
-
 
                     row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${formattedDate}</td>
@@ -557,6 +568,7 @@
                             <div>${log.receiver_name || ''} (${log.receiver_country || ''})</div>
                             <div class="text-xs text-gray-500">${log.receiver_company || ''}</div>
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">${emailDisplay}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.request_reference || ''}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${accountDisplay}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">${log.booking_ref || ''}</td>
@@ -619,11 +631,20 @@
                     });
                 });
             }
+
+            function setDefaultDates() {
+                const today = new Date().toISOString().slice(0, 10);
+                dateFromInput.value = today;
+                dateToInput.value = today;
+            }
             
+            // --- Initial Setup ---
             setupTheme();
             setupLanguageSwitch();
             setupSorting();
+            setDefaultDates();
             updateContentLanguage();
+            fetchLogs(); // Automatically fetch logs for today on page load
         });
     </script>
 </body>
