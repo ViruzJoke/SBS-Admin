@@ -110,6 +110,10 @@
                             <input type="text" id="phone" class="input-field mt-1" placeholder="Shipper or Receiver Phone">
                         </div>
                         <div>
+                            <label for="email" class="block text-sm font-medium" data-i18n="email">E-mail</label>
+                            <input type="email" id="email" class="input-field mt-1" placeholder="Shipper or Receiver E-mail">
+                        </div>
+                        <div>
                             <label for="shipperCountry" class="block text-sm font-medium" data-i18n="shipperCountry">Shipper Country</label>
                             <input type="text" id="shipperCountry" class="input-field mt-1" placeholder="Country Code">
                         </div>
@@ -192,7 +196,7 @@
             const translations = {
                 'th': {
                     'title': 'ค้นหาข้อมูลชิปเมนต์', 'logout': 'ออกจากระบบ', 'trackingNumber': 'หมายเลขติดตามพัสดุ', 'shipperName': 'ชื่อ/บริษัทผู้ส่ง',
-                    'receiverName': 'ชื่อ/บริษัทผู้รับ', 'reference': 'เลขที่อ้างอิง', 'bookingReference': 'Booking Reference', 'accountNumber': 'หมายเลขบัญชี', 'phone': 'เบอร์โทรศัพท์', 'shipperCountry': 'ประเทศผู้ส่ง',
+                    'receiverName': 'ชื่อ/บริษัทผู้รับ', 'reference': 'เลขที่อ้างอิง', 'bookingReference': 'Booking Reference', 'accountNumber': 'หมายเลขบัญชี', 'phone': 'เบอร์โทรศัพท์', 'email': 'อีเมล', 'shipperCountry': 'ประเทศผู้ส่ง',
                     'receiverCountry': 'ประเทศผู้รับ', 'dateFrom': 'จากวันที่', 'dateTo': 'ถึงวันที่', 'timeFrom': 'จากเวลา', 'timeTo': 'ถึงเวลา',
                     'search': 'ค้นหา', 'clear': 'ล้างค่า', 'loading': 'กำลังโหลดข้อมูล...', 'noResults': 'ไม่พบข้อมูลตามเงื่อนไขที่เลือก', 'colDate': 'วันที่', 
                     'colTracking': 'หมายเลขติดตาม', 'colShipper': 'ผู้ส่ง', 'colReceiver': 'ผู้รับ', 'colRef': 'อ้างอิง', 'colAccount': 'บัญชี', 'colBookingRef': 'Booking Ref', 'errorLoading': 'เกิดข้อผิดพลาดในการโหลดข้อมูล',
@@ -202,7 +206,7 @@
                 },
                 'en': {
                     'title': 'Shipment Search', 'logout': 'Logout', 'trackingNumber': 'Tracking Number', 'shipperName': 'Shipper Name/Company',
-                    'receiverName': 'Receiver Name/Company', 'reference': 'Reference', 'bookingReference': 'Booking Reference', 'accountNumber': 'Account Number', 'phone': 'Phone Number', 'shipperCountry': 'Shipper Country',
+                    'receiverName': 'Receiver Name/Company', 'reference': 'Reference', 'bookingReference': 'Booking Reference', 'accountNumber': 'Account Number', 'phone': 'Phone Number', 'email': 'E-mail', 'shipperCountry': 'Shipper Country',
                     'receiverCountry': 'Receiver Country', 'dateFrom': 'Date From', 'dateTo': 'Date To', 'timeFrom': 'From Time', 'timeTo': 'To Time',
                     'search': 'Search', 'clear': 'Clear', 'loading': 'Loading data...', 'noResults': 'No results found for the selected filters.', 'colDate': 'Date', 
                     'colTracking': 'Tracking #', 'colShipper': 'Shipper', 'colReceiver': 'Receiver', 'colRef': 'Reference', 'colAccount': 'Account', 'colBookingRef': 'Booking Ref', 'errorLoading': 'Error loading data. Please try again.',
@@ -431,7 +435,7 @@
                 exportCsvButton.classList.add('hidden');
 
                 const params = new URLSearchParams();
-                const fields = ['trackingNumber', 'bookingRef', 'shipperName', 'receiverName', 'reference', 'accountNumber', 'phone', 'shipperCountry', 'receiverCountry', 'dateFrom', 'dateTo', 'timeFrom', 'timeTo'];
+                const fields = ['trackingNumber', 'bookingRef', 'shipperName', 'receiverName', 'reference', 'accountNumber', 'phone', 'email', 'shipperCountry', 'receiverCountry', 'dateFrom', 'dateTo', 'timeFrom', 'timeTo'];
                 fields.forEach(field => {
                     const value = document.getElementById(field)?.value;
                     if (value) params.append(field, value);
